@@ -1,5 +1,7 @@
 (include "c_tick.scm")
 
-(load "test.scm")
+(for-each (lambda (f)
+  (load f))
+  (cdr (argv)))
 
 (return-to-host)

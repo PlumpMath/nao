@@ -8,6 +8,11 @@ int main(int argc, char **argv){
 
   init_tick();
 
+  int heap    = 0;
+  int stack   = 0;
+  int symbols = 0;
+  CHICKEN_parse_command_line(argc, argv, &heap, &stack, &symbols);
+
   CHICKEN_run(C_toplevel);
 
   return uv_run(loop);

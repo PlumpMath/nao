@@ -22,7 +22,7 @@
     (set! ticks `()))
   
   (define-external (ticks_empty_p) bool
-    (if (= (length ticks) 0)
+    (if (= (length new-ticks) 0)
       #t #f)))
 
 (import tick)
