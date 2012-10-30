@@ -78,8 +78,8 @@
 
 (import coroutine)
 
-(define make-coroutine make-coroutine^)
-(define coroutine-sleep coroutine-sleep^)
-(define coroutine-wake coroutine-wake^)
+(define make-cor make-coroutine^)
+(define cor-sleep coroutine-sleep^)
+(define cor-wake coroutine-wake^)
 (define run-scheduler run-scheduler^)
 
