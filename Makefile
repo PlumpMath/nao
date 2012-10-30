@@ -22,7 +22,7 @@ LIBS = -Ldeps/libuv -luv -lm -ldl -lrt -lpthread
 
 .PHONY: subdirs
 
-$(bin_PROGRAMS) : $(nao_SOURCES) subdirs
+$(bin_PROGRAMS) : $(nao_SOURCES) subdirs Makefile
 	csc $(nao_SOURCES_CMP) $(LIBS) $(INCLUDES) -o $@ -embedded
 
 
