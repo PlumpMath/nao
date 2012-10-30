@@ -3,14 +3,19 @@
   (import scheme)
   
   (define ticks `())
+  (define new-ticks `())
   
   (define (next-tick^ callback)
-    (set! ticks (cons callback ticks))
+    (set! new-ticks (cons callback new-ticks))
     (add-tick))
   
   (define add-tick (foreign-lambda void "add_tick"))
   
   (define-external (run_ticks) void
+    (for-each (lambda (cb)
+      (set! ticks (cons cb ticks)))
+      new-ticks)
+    (set! new-ticks `())
     (for-each (lambda (cb)
       (cb))
       ticks)
