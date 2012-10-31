@@ -65,7 +65,7 @@ static void on_new_connection(uv_stream_t *socket, int status){
 void socket_listen(uv_tcp_t * socket, char * event){
   int r = uv_listen((uv_stream_t *) socket, 128, on_new_connection);
   if(r) err(uv_error_msg());
-  strcpy(&((c_tcp_t*)socket)->user_data, event);
+  strcpy((char *)&((c_tcp_t*)socket)->user_data, event);
   //((c_tcp_t*)socket)->user_data = event;
 }
 
@@ -83,13 +83,13 @@ void socket_connect(uv_tcp_t * socket, char * addr, int port, char * event){
   struct sockaddr_in6 dest = uv_ip6_addr(addr, port);
   int r = uv_tcp_connect6(connect, socket, dest, on_connect);
   if(r) err(uv_error_msg());
-  strcpy(&((c_tcp_t*)socket)->user_data, event);
+  strcpy((char *)&((c_tcp_t*)socket)->user_data, event);
   //((c_tcp_t*)socket)->user_data = event;
 }
 
 static void on_read(uv_stream_t * socket, ssize_t nread, uv_buf_t buf){
   if(nread == -1){
-    err(uv_error_msg());
+    socket_read_stop((uv_tcp_t *)socket);
   } else {
     event_notify(socket_event(((c_tcp_t*)socket)->user_data, "read"), c_to_string(buf.base));
     free(buf.base);
@@ -105,7 +105,7 @@ static uv_buf_t on_alloc(uv_handle_t *handle, size_t suggested_size){
 void socket_read(uv_tcp_t * socket, char * event){
   int r = uv_read_start((uv_stream_t *)socket, on_alloc, on_read);
   if(r) err(uv_error_msg());
-  strcpy(&((c_tcp_t*)socket)->user_data, event);
+  strcpy((char *)&((c_tcp_t*)socket)->user_data, event);
 }
 
 void socket_read_stop(uv_tcp_t * socket){
@@ -131,7 +131,7 @@ void socket_write(uv_tcp_t * socket, char *data, int len, char * event){
   bufs[0] = uv_buf_init(buf, len);
   int r = uv_write(req, (uv_stream_t *)socket, bufs, 1, on_write);
   if(r) err(uv_error_msg());
-  strcpy(&((c_tcp_t*)socket)->user_data, event);
+  strcpy((char *)&((c_tcp_t*)socket)->user_data, event);
 }
 
 static void on_close(uv_handle_t * h){
