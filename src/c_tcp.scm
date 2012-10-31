@@ -17,6 +17,7 @@
 (module uv-tcp (make-socket^
                 socket-bind^
                 socket-listen^
+                socket-connect^
                 remove-socket^)
   
   (import foreign)
@@ -29,6 +30,14 @@
     name
     ref
     events)
+
+  (define-external (make_socket_with_ref (nonnull-c-pointer ref)) scheme-object
+    (let ((s (make-socket
+               (gensym)
+               ref
+               (make-hash-table initial: #f weak-keys: #f weak-values: #f))))
+      (socket-ref-set! s ref)
+      s))
 
   (define make-socket^^ (foreign-lambda nonnull-c-pointer make_socket))
   (define (make-socket^ #!key (name #f))
@@ -44,23 +53,31 @@
   (define (socket-bind^ socket addr port)
     (socket-bind (socket-ref socket) addr port))
 
-  (define socket-listen (foreign-lambda void socket_listen nonnull-c-pointer scheme-object))
+  (define socket-listen (foreign-lambda void socket_listen nonnull-c-pointer symbol))
   (define (socket-listen^ socket callback)
-    (let ((e (make-event^)))
+    (let ((e (event-name^ (make-event^))))
       (hash-table-set! (socket-events socket) 'listen e)
       (event-subscribe^ e callback)
       (socket-listen (socket-ref socket) e)))
 
+  (define socket-connect (foreign-lambda void socket_connect nonnull-c-pointer nonnull-c-string int symbol))
+  (define (socket-connect^ socket addr port callback)
+    (let ((e (event-name^ (make-event^))))
+      (hash-table-set! (socket-events socket) 'connect e)
+      (event-subscribe^ e callback)
+      (socket-connect (socket-ref socket) addr port e)))
+
   (define remove-socket (foreign-lambda void remove_socket nonnull-c-pointer))
   (define (remove-socket^ socket)
     (remove-socket (socket-ref socket))
-    (let ((e (hash-table-ref (socket-events socket) 'listen)))
-      (if e
-         (event-remove^ e)))))
+    (for-each (lambda (e)
+        (event-remove^ e))
+      (hash-table-values (socket-events socket)))))
 
 (import uv-tcp)
 
 (define make-socket make-socket^)
 (define socket-bind socket-bind^)
 (define socket-listen socket-listen^)
+(define socket-connect socket-connect^)
 (define remove-socket remove-socket^)

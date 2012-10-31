@@ -16,6 +16,7 @@
 
 
 (module event (make-event^
+               event-name^
                event-subscribe^
                event-notify^
                event-remove^
@@ -25,27 +26,32 @@
   (import chicken)
   (import foreign)
   (use srfi-69)
+  (import tick)
 
   (define-record event
      name
      callbacks)
 
+  (define event-name^ event-name)
+
   (define events (make-hash-table initial: #f weak-keys: #f weak-values: #f))
 
   (define (make-event^ #!key (name #f))
-    (let ((e (make-event
-               (if name
-                  name
-                  (gensym))
-               (make-hash-table initial: #f weak-keys: #t weak-values: #f))))
-      (hash-table-set! events name e)
+    (let* ((n (if name
+                 name
+                 (gensym)))
+           (e (make-event
+                n
+                (make-hash-table initial: #f weak-keys: #t weak-values: #f))))
+      (hash-table-set! events (if (symbol? n) (symbol->string n) n) e)
       e))
 
   (define (event^ name)
-    (let ((e (hash-table-ref events name)))
-      (if e
-        e
-        (abort "cannot find event"))))
+    (let ((nn (if (symbol? name) (symbol->string name) name)))
+      (if (hash-table-exists? events nn)
+        (hash-table-ref events nn)
+        (begin
+          (abort "cannot find event")))))
 
   (define (event-subscribe^ ev callback)
     (let ((e (cond
@@ -76,8 +82,10 @@
            (cbs (event-callbacks e)))
       (hash-table-delete! cbs callback)))
 
-  (define-external (event_notify (scheme-object ev) (scheme-object args)) void
-     (apply event-notify^ (cons ev args))))
+  (define-external (event_notify (symbol ev) (scheme-object arg)) void
+    (next-tick^ (lambda ()
+      (let ((args (if (list? arg) arg (list arg))))
+        (apply event-notify^ (cons ev args)))))))
 
 
 (import event)
@@ -88,3 +96,4 @@
 (define event-remove event-remove^)
 (define event-unsubscribe event-unsubscribe^)
 (define event event^)
+(define event-name event-name^)
