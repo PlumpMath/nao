@@ -17,6 +17,7 @@
 (include "c_tick.scm")
 (include "c_coroutine.scm")
 (include "c_event.scm")
+(include "c_tcp.scm")
 
 (for-each (lambda (f)
   (load f))

@@ -29,6 +29,10 @@ void err(const char * msg){
   assert(0);
 }
 
+void warn(const char * msg){
+  printf("[WARN]: %s\n", msg);
+}
+
 void debug(const char * msg){
   printf("[DEBUG]: %s\n", msg);
 }

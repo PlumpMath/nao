@@ -29,6 +29,8 @@
 (define cb1 (event-subscribe e (lambda ()
   (display "event1\n"))))
 
+(gc)
+
 (event-notify e)
 
 (event-unsubscribe e cb)

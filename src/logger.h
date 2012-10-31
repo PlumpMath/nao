@@ -21,6 +21,7 @@
 
 void info(const char *);
 void err(const char *);
+void warn(const char *);
 void debug(const char *);
 
 #endif
