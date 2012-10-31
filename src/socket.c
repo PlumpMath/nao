@@ -108,6 +108,11 @@ void socket_read(uv_tcp_t * socket, char * event){
   strcpy(&((c_tcp_t*)socket)->user_data, event);
 }
 
+void socket_read_stop(uv_tcp_t * socket){
+  int r = uv_read_stop((uv_stream_t *)socket);
+  if(r) err(uv_error_msg());
+}
+
 static void on_write(uv_write_t * req, int status){
   if(status == -1) err(uv_error_msg());
   uv_tcp_t * socket = (uv_tcp_t *)(req->handle);

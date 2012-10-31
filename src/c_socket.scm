@@ -19,6 +19,7 @@
                 socket-listen^
                 socket-connect^
                 socket-read^
+                socket-read-stop^
                 socket-write^
                 remove-socket^)
   
@@ -95,6 +96,10 @@
       (event-subscribe^ e callback)
       (socket-read (socket-ref socket) (socket-name socket))))
 
+  (define socket-read-stop (foreign-lambda void socket_read_stop nonnull-c-pointer))
+  (define (socket-read-stop^ socket)
+    (socket-read-stop (socket-ref socket)))
+
   (define socket-write (foreign-lambda void socket_write nonnull-c-pointer nonnull-c-string int symbol))
   (define (socket-write^ socket data callback)
     (let ((e (event-name^ (make-event^))))
@@ -116,5 +121,6 @@
 (define socket-listen socket-listen^)
 (define socket-connect socket-connect^)
 (define socket-read socket-read^)
+(define socket-read-stop socket-read-stop^)
 (define socket-write socket-write^)
 (define remove-socket remove-socket^)

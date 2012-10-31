@@ -7,5 +7,5 @@
 (define c (make-socket))
 (socket-connect c "0.0.0.0" 1234 (lambda (cc)
   (socket-read cc (lambda (d) (display d)
-  (remove-socket c)
+  (socket-read-stop cc)
   (remove-socket s)))))
