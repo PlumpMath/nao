@@ -18,6 +18,8 @@
 (module coroutine (make-coroutine^
                    coroutine-sleep^
                    coroutine-wake^
+                   coroutine-alive?^
+                   current-coroutine^
                    run-scheduler^)
   (import scheme)
   (import chicken)
@@ -31,13 +33,15 @@
     alive
     cont)
 
-  (define current-coroutine)
+  (define current-coroutine^)
 
   (define running-q (make-hash-table initial: #f weak-keys: #t weak-values: #f))
   (define sleeping-q (make-hash-table initial: #f weak-keys: #t weak-values: #f))
 
-  (define (make-coroutine^ body)
-    (letrec ((c (make-fiber (gensym)
+  (define (make-coroutine^ body #!key (name #f))
+    (letrec ((c (make-fiber (if name
+                              name
+                              (gensym))
                           #t
                           (lambda (arg)
                             (body)
@@ -47,15 +51,15 @@
   
   (define (coroutine-sleep^)
     (%shift cont
-      (hash-table-set! sleeping-q current-coroutine current-coroutine)
-      (hash-table-delete! running-q current-coroutine)
-      (fiber-cont-set! current-coroutine cont)))
+      (hash-table-set! sleeping-q current-coroutine^ current-coroutine^)
+      (hash-table-delete! running-q current-coroutine^)
+      (fiber-cont-set! current-coroutine^ cont)))
 
   (define (coroutine-wake^ f)
     (hash-table-set! running-q f f)
     (hash-table-delete! sleeping-q f))
 
-  (define (coroutine-alive? f)
+  (define (coroutine-alive?^ f)
     (fiber-alive f))
 
   (define (run-one)
@@ -63,9 +67,9 @@
       (for-each (lambda (c)
         (%reset
           (hash-table-delete! running-q c)
-          (if (coroutine-alive? c)
+          (if (coroutine-alive?^ c)
             (begin
-              (set! current-coroutine c)
+              (set! current-coroutine^ c)
               ((fiber-cont c) (void))))))
         cs)))
 
@@ -81,5 +85,7 @@
 (define make-cor make-coroutine^)
 (define cor-sleep coroutine-sleep^)
 (define cor-wake coroutine-wake^)
+(define cor-alive? coroutine-alive?^)
+(define current-cor current-coroutine^)
 (define run-scheduler run-scheduler^)
 

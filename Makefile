@@ -27,5 +27,5 @@ $(bin_PROGRAMS) : $(nao_SOURCES) subdirs Makefile
 
 
 subdirs:
-	makedir -p $(SUBDIRS); make -C $(SUBDIRS)
+	mkdir -p $(SUBDIRS); make -C $(SUBDIRS)
 
