@@ -7,6 +7,7 @@ nao_SOURCES = src/main.c \
              src/c_coroutine.scm \
              src/c_event.scm \
              src/c_tcp.scm \
+             src/c_utils.scm \
              src/utils.c \
              src/logger.c
 

@@ -14,6 +14,7 @@
 ;; limitations under the License.
 ;;;;
 
+(include "c_utils.scm")
 (include "c_tick.scm")
 (include "c_coroutine.scm")
 (include "c_event.scm")

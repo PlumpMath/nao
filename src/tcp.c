@@ -118,12 +118,12 @@ static void on_write(uv_write_t * req, int status){
 void socket_write(uv_tcp_t * socket, char *data, int len, char * event){
   uv_write_t * req = (uv_write_t *)malloc(sizeof(uv_write_t));
   assert(req);
-  char * buf = (char *) malloc(1024);
+  char * buf = (char *) malloc(len);
   assert(buf);
   strncpy(buf, data, len);
   uv_buf_t *bufs = (uv_buf_t *) malloc(sizeof(uv_buf_t));
   assert(bufs);
-  bufs[0] = uv_buf_init(buf, 1024);
+  bufs[0] = uv_buf_init(buf, len);
   int r = uv_write(req, (uv_stream_t *)socket, bufs, 1, on_write);
   if(r) err(uv_error_msg());
   strcpy(&((c_tcp_t*)socket)->user_data, event);

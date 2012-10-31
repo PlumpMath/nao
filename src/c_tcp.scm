@@ -33,9 +33,6 @@
     ref
     events)
 
-  (define-external (c_to_string (nonnull-c-string s)) scheme-object
-    s)
-
   (define sockets (make-hash-table initial: #f weak-keys: #f weak-values: #f)) 
 
   (define-external (make_socket_with_ref (nonnull-c-pointer ref)) scheme-object
