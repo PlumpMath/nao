@@ -21,3 +21,17 @@
   (cor-sleep)
   (display "eee\n"))))
 
+(define e (make-event))
+
+(define cb (event-subscribe e (lambda ()
+  (display "event\n"))))
+
+(define cb1 (event-subscribe e (lambda ()
+  (display "event1\n"))))
+
+(event-notify e)
+
+(event-unsubscribe e cb)
+
+(event-notify e)
+
