@@ -14,7 +14,7 @@
 ;; limitations under the License.
 ;;;;
 
-(module uv-tcp (make-socket^
+(module uv-socket (make-socket^
                 socket-bind^
                 socket-listen^
                 socket-connect^
@@ -109,7 +109,7 @@
         (event-remove^ e))
       (hash-table-values (socket-events socket)))))
 
-(import uv-tcp)
+(import uv-socket)
 
 (define make-socket make-socket^)
 (define socket-bind socket-bind^)

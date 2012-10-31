@@ -6,7 +6,7 @@ nao_SOURCES = src/main.c \
              src/c_tick.scm \
              src/c_coroutine.scm \
              src/c_event.scm \
-             src/c_tcp.scm \
+             src/c_socket.scm \
              src/c_utils.scm \
              src/utils.c \
              src/logger.c
@@ -15,7 +15,7 @@ nao_SOURCES_CMP = src/main.c \
              src/tick.c \
              src/utils.c \
              src/logger.c \
-             src/tcp.c \
+             src/socket.c \
              src/c_main.scm
 
 SUBDIRS = deps/libuv

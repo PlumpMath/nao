@@ -16,8 +16,8 @@
 */
 
 
-#ifndef __TCP_H__
-#define __TCP_H__
+#ifndef __SOCKET_H__
+#define __SOCKET_H__
 #include <uv.h>
 #include <chicken.h>
 

@@ -16,7 +16,7 @@
 */
 
 
-#include "tcp.h"
+#include "socket.h"
 #include <uv.h>
 #include <string.h>
 #include "logger.h"
