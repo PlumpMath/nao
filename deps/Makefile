@@ -6,5 +6,6 @@ libuv/.git : Makefile
 	  rm libuv -rf; \
 	fi;
 	git clone https://github.com/joyent/libuv.git
+	make -C libuv
 
 clean :

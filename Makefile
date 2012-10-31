@@ -18,7 +18,7 @@ nao_SOURCES_CMP = src/main.c \
              src/socket.c \
              src/c_main.scm
 
-SUBDIRS = deps/libuv
+SUBDIRS = deps
 
 INCLUDES = -Ideps/libuv/include -Isrc -include-path src
 
