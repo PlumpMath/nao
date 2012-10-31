@@ -25,6 +25,8 @@ uv_tcp_t * make_socket();
 void socket_bind(uv_tcp_t *, char *, int);
 void socket_listen(uv_tcp_t *, char *);
 void socket_connect(uv_tcp_t *, char *, int, char *);
+void socket_read(uv_tcp_t *, char *);
+void socket_write(uv_tcp_t *, char *, int, char *);
 void remove_socket(uv_tcp_t *);
 
 #endif

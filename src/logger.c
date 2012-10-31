@@ -26,7 +26,7 @@ void info(const char * msg){
 
 void err(const char * msg){
   printf("[ERR]: %s\n", msg);
-  assert(0);
+  //assert(0);
 }
 
 void warn(const char * msg){
