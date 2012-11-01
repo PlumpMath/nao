@@ -33,6 +33,11 @@ typedef struct {
   unsigned long socket_id;
 } c_write_req_t;
 
+typedef struct {
+  uv_connect_t req;
+  unsigned long socket_id;
+} c_connect_t;
+
 uv_tcp_t * make_socket(unsigned long id){
   uv_tcp_t * socket = (uv_tcp_t *)malloc(sizeof(c_tcp_t));
   assert(socket);
@@ -76,17 +81,17 @@ void socket_listen(uv_tcp_t * socket){
 
 static void on_connect(uv_connect_t * req, int status){
   if(status == -1) err(uv_error_msg());
-  uv_tcp_t * socket = (uv_tcp_t *)req->handle;
-  unsigned long s_id = ((c_tcp_t*)socket)->socket_id;
+  unsigned long s_id = ((c_connect_t *)req)->socket_id;
   event_notify(socket_event(s_id, "connect"), s_id);
   free(req);
 }
 
-void socket_connect(uv_tcp_t * socket, char * addr, int port){
-  uv_connect_t *connect = (uv_connect_t*)malloc(sizeof(uv_connect_t));
+void socket_connect(uv_tcp_t * socket, char * addr, int port, unsigned long socket_id){
+  c_connect_t *connect = (c_connect_t*)malloc(sizeof(c_connect_t));
   assert(connect);
+  connect->socket_id = socket_id;
   struct sockaddr_in6 dest = uv_ip6_addr(addr, port);
-  int r = uv_tcp_connect6(connect, socket, dest, on_connect);
+  int r = uv_tcp_connect6((uv_connect_t *)connect, socket, dest, on_connect);
   if(r) err(uv_error_msg());
 }
 

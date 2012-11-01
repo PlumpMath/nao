@@ -16,6 +16,8 @@
 
 
 (module channel (make-chan^
+                 chan^
+                 chan-name^
                  chan-empty?^
                  <-^
                  ->^
@@ -39,6 +41,11 @@
     name
     queue
     events)
+
+  (define chan-name^ channel-name)
+
+  (define (chan^ name)
+    (hash-table-ref channels name))
 
   (define (make-chan^ #!key (name #f))
     (let* ((n (if name name (gensym)))
@@ -89,6 +96,8 @@
 (import channel)
 
 (define make-chan make-chan^)
+(define chan chan^)
+(define chan-name chan-name^)
 (define chan-empty? chan-empty?^)
 (define <- <-^)
 (define -> ->^)

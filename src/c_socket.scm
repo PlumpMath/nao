@@ -77,13 +77,13 @@
       (event-subscribe^ e callback)
       (socket-listen (socket-ref socket))))
 
-  (define socket-connect (foreign-lambda void socket_connect nonnull-c-pointer nonnull-c-string int))
+  (define socket-connect (foreign-lambda void socket_connect nonnull-c-pointer nonnull-c-string int unsigned-long))
   (define (socket-connect^ socket addr port callback)
     (let* ((e (make-event^))
            (e-id (register-object^ e)))
       (hash-table-set! (socket-events socket) "connect" e-id)
       (event-subscribe^ e callback)
-      (socket-connect (socket-ref socket) addr port)))
+      (socket-connect (socket-ref socket) addr port (socket-id socket))))
 
   (define socket-read (foreign-lambda void socket_read nonnull-c-pointer))
   (define (socket-read^ socket callback)

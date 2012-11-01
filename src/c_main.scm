@@ -22,6 +22,7 @@
 (include "c_event.scm")
 (include "c_socket.scm")
 (include "c_channel.scm")
+(include "c_remote.scm")
 (include "c_dsl.scm")
 
 (make-cor (lambda ()

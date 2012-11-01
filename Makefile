@@ -12,6 +12,8 @@ nao_DEPS = src/main.c \
            src/c_logger.scm \
            src/c_object.scm \
            src/c_dsl.scm \
+           src/c_remote.scm \
+           src/socket.c \
            src/utils.c
 
 nao_SOURCES = src/main.c \
