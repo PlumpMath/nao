@@ -27,5 +27,9 @@ Client:
 * git clone https://github.com/wehu/nao.git
 * make
 
+### Run
+
+	nao file.scm [...]
+
 ### Limitation
 
