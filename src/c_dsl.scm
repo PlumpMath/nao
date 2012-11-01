@@ -16,7 +16,8 @@
 
 
 (module dsl (@^
-             always@^)
+             always@^
+             initial^)
 
   (import scheme)
   (import chicken)
@@ -36,9 +37,9 @@
         args)
       (coroutine-sleep^)
       (hash-table-for-each
+        r
         (lambda (arg f)
-          (unsubscribe-on-write^ arg f))
-        r)))
+          (unsubscribe-on-write^ arg f)))))
 
   (define (always@^ body . args)
     (make-coroutine^ (lambda ()
@@ -46,14 +47,15 @@
                   (apply @^ args)
                   (body)
                   (f))))
-        (f))))))
+        (f)))))
+  
+  (define (initial^ body)
+    (make-coroutine^ (lambda ()
+      (make-coroutine^ (lambda ()
+         (body)))))))
 
 (import dsl)
 
 (define @ @^)
 (define always@ always@^) 
-
-(define-syntax bar
-  (syntax-rules ()
-   ((_) "bar")))
-
+(define initial initial^)

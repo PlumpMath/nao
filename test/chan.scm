@@ -5,4 +5,5 @@
   (info "b"))
   c)
 
-(-> c "aa")
+(initial (lambda ()
+  (-> c "aa")))
