@@ -30,6 +30,15 @@
   (define id->object (make-hash-table))
   (define object->id (make-hash-table))
 
+  (define (genid)
+    (let ((i (if (> object-counter 10000000000000)
+              1
+              (+ object-counter 1))))
+      (set! object-counter i)
+      (if (hash-table-exists? id->object i)
+        (genid)
+        i)))
+
   (define (object->id^ obj)
     (hash-table-ref object->id obj))
 
@@ -39,9 +48,7 @@
   (define (register-object^ obj)
     (let ((i (if (hash-table-exists? object->id obj)
                (hash-table-ref object->id obj)
-               (begin 
-                 (set! object-counter (+ object-counter 1))
-                 object-counter))))
+               (genid))))
       (hash-table-set! object->id obj i)
       (hash-table-set! id->object i obj)
       i))
