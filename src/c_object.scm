@@ -26,17 +26,23 @@
   (use srfi-69)
 
   (define object-counter 0)
+  (define max-object-num 10000000000000)
 
   (define id->object (make-hash-table))
   (define object->id (make-hash-table))
 
-  (define (genid)
-    (let ((i (if (> object-counter 10000000000000)
+  (define (genid oi)
+    (let ((i (if (> object-counter max-object-num)
               1
               (+ object-counter 1))))
+      (if (and (not (= oi 0))
+             (= oi i))
+        (abort (string-append
+                 "the number of objects exceeds limit "
+                 (number->string max-object-num))))
       (set! object-counter i)
       (if (hash-table-exists? id->object i)
-        (genid)
+        (genid (if (= oi 0) i oi))
         i)))
 
   (define (object->id^ obj)
@@ -48,7 +54,7 @@
   (define (register-object^ obj)
     (let ((i (if (hash-table-exists? object->id obj)
                (hash-table-ref object->id obj)
-               (genid))))
+               (genid 0))))
       (hash-table-set! object->id obj i)
       (hash-table-set! id->object i obj)
       i))
