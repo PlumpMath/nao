@@ -60,7 +60,7 @@
   (define-external (register_string (nonnull-c-string s)) unsigned-long
     (register-object^ s))
 
-  (define-external (unregister_string (unsigned-long i)) void
+  (define-external (unregister_object (unsigned-long i)) void
     (unregister-object-by-id^ i)))
 
 (import object)

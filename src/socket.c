@@ -98,7 +98,7 @@ static void on_read(uv_stream_t * socket, ssize_t nread, uv_buf_t buf){
     unsigned long s_id = ((c_tcp_t*)socket)->socket_id;
     unsigned long b_id = register_string(buf.base);
     event_notify(socket_event(s_id, "read"), b_id);
-    unregister_string(b_id);
+    unregister_object(b_id);
     free(buf.base);
   }
 }
