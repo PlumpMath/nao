@@ -31,6 +31,7 @@
   (import uv-socket)
   (import tick)
   (import event)
+  (import logger)
   (import coroutine)
   
   (use srfi-69)

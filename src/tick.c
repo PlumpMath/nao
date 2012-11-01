@@ -33,10 +33,12 @@ static void _run_ticks(){
 }
 
 static void prepare(uv_prepare_t *handle, int status){
+  run_scheduler();
   _run_ticks();
 }
 
 static void check(uv_check_t *handle, int status){
+  run_scheduler();
   _run_ticks();
 }
 

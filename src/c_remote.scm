@@ -35,7 +35,8 @@
     (socket-listen^ server (lambda (c)
       (socket-read^ c (lambda (d)
         (let ((dd (string-split d "\n")))
-          (->^ (chan^ (car dd)) (apply string-append (cdr dd)))))))))
+          (->^ (chan^ (car dd)) (apply string-append (cdr dd)))
+          (remove-socket^ c)))))))
 
   (define (stop-server^)
     (remove-socket^ server))
@@ -46,8 +47,8 @@
       (socket-connect^ c addr port (lambda (c)
         (socket-write^ c (string-append chan "\n" data)
           (lambda (c)
-            (void)))
-        (coroutine-wake^ cc)))
+            (remove-socket^ c)
+            (coroutine-wake^ cc)))))
       (coroutine-sleep^)))
 
   (define (<~^ chan #!key (addr "0.0.0.0") (port 3000))
