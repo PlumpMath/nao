@@ -23,15 +23,17 @@
   (import scheme)
   (import chicken)
   (import foreign)
+  (use srfi-13)
+  (use srfi-1)
   (use extras)
 
   (define (p . args)
     (let ((ss (fold (lambda (arg init)
                      (append init (list (format #f "~a" arg))))
-               init
+               `()
                args)))
       (display "[nao ")
-      (display (string-join ss) " ")
+      (display (string-join ss " "))
       (display "\n")))
 
   (define-external (info (nonnull-c-string arg)) void
