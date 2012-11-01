@@ -37,7 +37,6 @@
   (define current-coroutine^)
 
   (define running-q (make-hash-table hash: eq?-hash))
-  (define sleeping-q (make-hash-table hash: eq?-hash))
 
   (define (make-coroutine^ body #!optional (name #f))
     (letrec ((c (make-fiber (if name
@@ -52,15 +51,11 @@
   
   (define (coroutine-sleep^)
     (%shift cont
-      ;(hash-table-ref running-q current-coroutine^)
-      (hash-table-set! sleeping-q current-coroutine^ current-coroutine^)
       (hash-table-delete! running-q current-coroutine^)
       (fiber-cont-set! current-coroutine^ cont)))
 
   (define (coroutine-wake^ f)
-    ;(hash-table-ref sleeping-q f)
-    (hash-table-set! running-q f f)
-    (hash-table-delete! sleeping-q f))
+    (hash-table-set! running-q f f))
 
   (define (coroutine-alive?^ f)
     (fiber-alive f))
