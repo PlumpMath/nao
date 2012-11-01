@@ -21,10 +21,13 @@
 (include "c_coroutine.scm")
 (include "c_event.scm")
 (include "c_socket.scm")
+(include "c_channel.scm")
+(include "c_dsl.scm")
 
-(for-each (lambda (f)
-  (load f))
-  (cdr (argv)))
+(make-cor (lambda ()
+  (for-each (lambda (f)
+    (load f))
+    (cdr (argv)))))
 
 (run-scheduler)
 

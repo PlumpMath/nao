@@ -14,7 +14,8 @@
 ;; limitations under the License.
 ;;;;
 
-(module tick (next-tick^)
+(module tick (next-tick^
+              ticks-empty?^)
   (import foreign)
   (import scheme)
   
@@ -39,7 +40,10 @@
   
   (define-external (ticks_empty_p) bool
     (if (= (length new-ticks) 0)
-      #t #f)))
+      #t #f))
+
+  (define ticks-empty?^ ticks_empty_p))
 
 (import tick)
 (define next-tick next-tick^)
+(define ticks-empty? ticks-empty?^)

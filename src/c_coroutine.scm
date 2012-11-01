@@ -76,7 +76,8 @@
   (define (run-scheduler^)
     (letrec ((l (lambda ()
         (run-one)
-        (if (not (= (length (hash-table-keys running-q)) 0))
+        (if (or (not (= (length (hash-table-keys running-q)) 0))
+                (not (ticks-empty?^)))
           (next-tick^ l)))))
       (next-tick^ l))))
 

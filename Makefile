@@ -7,9 +7,11 @@ nao_SOURCES = src/main.c \
              src/c_coroutine.scm \
              src/c_event.scm \
              src/c_socket.scm \
+             src/c_channel.scm \
              src/c_utils.scm \
              src/c_logger.scm \
              src/c_object.scm \
+             src/c_dsl.scm \
              src/utils.c
 
 nao_SOURCES_CMP = src/main.c \
