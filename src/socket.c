@@ -94,6 +94,7 @@ void socket_connect(uv_tcp_t * socket, char * addr, int port){
 static void on_read(uv_stream_t * socket, ssize_t nread, uv_buf_t buf){
   if(nread == -1){
     socket_read_stop((uv_tcp_t *)socket);
+  } else if(nread == 0) {
   } else {
     unsigned long s_id = ((c_tcp_t*)socket)->socket_id;
     unsigned long b_id = register_string(buf.base);

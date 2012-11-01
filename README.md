@@ -9,4 +9,3 @@ Nao is a DSL based on chicken scheme for distributed reactive programming.
 
 ### Limitation
 
-Currently only work in 32 bits.
