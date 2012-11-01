@@ -8,6 +8,7 @@ nao_SOURCES = src/main.c \
              src/c_event.scm \
              src/c_socket.scm \
              src/c_utils.scm \
+             src/c_object.scm \
              src/utils.c \
              src/logger.c
 
@@ -27,7 +28,7 @@ LIBS = -Ldeps/libuv -luv -lm -ldl -lrt -lpthread
 .PHONY: subdirs
 
 $(bin_PROGRAMS) : $(nao_SOURCES) subdirs Makefile
-	csc $(nao_SOURCES_CMP) $(LIBS) $(INCLUDES) -o $@ -embedded
+	csc $(nao_SOURCES_CMP) $(LIBS) $(INCLUDES) -o $@ -embedded -:w
 
 
 subdirs:

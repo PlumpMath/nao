@@ -35,8 +35,8 @@
 
   (define current-coroutine^)
 
-  (define running-q (make-hash-table initial: #f weak-keys: #t weak-values: #f))
-  (define sleeping-q (make-hash-table initial: #f weak-keys: #t weak-values: #f))
+  (define running-q (make-hash-table hash: eq?-hash))
+  (define sleeping-q (make-hash-table hash: eq?-hash))
 
   (define (make-coroutine^ body #!key (name #f))
     (letrec ((c (make-fiber (if name

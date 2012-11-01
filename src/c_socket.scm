@@ -28,91 +28,90 @@
   (import chicken)
   (import scheme)
   (use srfi-69)
+  (import object)
 
   (define-record socket
-    name
+    id
     ref
     events)
 
-  (define sockets (make-hash-table initial: #f weak-keys: #f weak-values: #f)) 
-
-  (define-external (make_socket_with_ref (nonnull-c-pointer ref)) scheme-object
+  (define-external (make_socket_with_ref (nonnull-c-pointer ref)) unsigned-long
     (let ((s (make-socket
-               (gensym)
+               #f
                ref
-               (make-hash-table initial: #f weak-keys: #f weak-values: #f))))
+               (make-hash-table))))
       (socket-ref-set! s ref)
-      (hash-table-set! sockets (symbol->string (socket-name s)) s)
-      s))
+      (let ((i (register-object^ s)))
+        (socket-id-set! s i)
+        i)))
 
-  (define make-socket^^ (foreign-lambda nonnull-c-pointer make_socket))
+  (define make-socket^^ (foreign-lambda nonnull-c-pointer make_socket unsigned-long))
   (define (make-socket^)
     (let ((s (make-socket
-               (gensym)
-               (make-socket^^)
-               (make-hash-table initial: #f weak-keys: #f weak-values: #f))))
-      (hash-table-set! sockets (symbol->string (socket-name s)) s)
+               #f
+               #f
+               (make-hash-table))))
+      (let* ((i (register-object^ s))
+             (ss (make-socket^^ i)))
+        (socket-id-set! s i)
+        (socket-ref-set! s ss))
       s))
 
-  (define (socket^ name)
-    (let ((nn (if (symbol? name) (symbol->string name) name)))
-      (if (hash-table-exists? sockets nn)
-        (hash-table-ref sockets nn)
-        (begin
-          (abort "cannot find socket")))))
-
-  (define-external (get_socket (nonnull-c-string name)) scheme-object
-    (socket^ name))
-
-  (define-external (socket_event (nonnull-c-string s) (nonnull-c-string ev)) nonnull-c-string
-    (let* ((socket (socket^ s))
+  (define-external (socket_event (unsigned-long s-id) (nonnull-c-string ev)) unsigned-long
+    (let* ((socket (id->object^ s-id))
            (evs (socket-events socket)))
       (if (hash-table-exists? evs ev)
-        (symbol->string (hash-table-ref evs ev))
+        (hash-table-ref evs ev)
         (abort "cannot find event of socket"))))
 
   (define socket-bind (foreign-lambda void socket_bind nonnull-c-pointer nonnull-c-string int))
   (define (socket-bind^ socket addr port)
     (socket-bind (socket-ref socket) addr port))
 
-  (define socket-listen (foreign-lambda void socket_listen nonnull-c-pointer symbol))
+  (define socket-listen (foreign-lambda void socket_listen nonnull-c-pointer))
   (define (socket-listen^ socket callback)
-    (let ((e (event-name^ (make-event^))))
-      (hash-table-set! (socket-events socket) "listen" e)
+    (let* ((e (make-event^))
+           (e-id (register-object^ e)))
+      (hash-table-set! (socket-events socket) "listen" e-id)
       (event-subscribe^ e callback)
-      (socket-listen (socket-ref socket) (socket-name socket))))
+      (socket-listen (socket-ref socket))))
 
-  (define socket-connect (foreign-lambda void socket_connect nonnull-c-pointer nonnull-c-string int symbol))
+  (define socket-connect (foreign-lambda void socket_connect nonnull-c-pointer nonnull-c-string int))
   (define (socket-connect^ socket addr port callback)
-    (let ((e (event-name^ (make-event^))))
-      (hash-table-set! (socket-events socket) "connect" e)
+    (let* ((e (make-event^))
+           (e-id (register-object^ e)))
+      (hash-table-set! (socket-events socket) "connect" e-id)
       (event-subscribe^ e callback)
-      (socket-connect (socket-ref socket) addr port (socket-name socket))))
+      (socket-connect (socket-ref socket) addr port)))
 
-  (define socket-read (foreign-lambda void socket_read nonnull-c-pointer symbol))
+  (define socket-read (foreign-lambda void socket_read nonnull-c-pointer))
   (define (socket-read^ socket callback)
-    (let ((e (event-name^ (make-event^))))
-      (hash-table-set! (socket-events socket) "read" e)
+    (let* ((e (make-event^))
+           (e-id (register-object^ e)))
+      (hash-table-set! (socket-events socket) "read" e-id)
       (event-subscribe^ e callback)
-      (socket-read (socket-ref socket) (socket-name socket))))
+      (socket-read (socket-ref socket))))
 
   (define socket-read-stop (foreign-lambda void socket_read_stop nonnull-c-pointer))
   (define (socket-read-stop^ socket)
     (socket-read-stop (socket-ref socket)))
 
-  (define socket-write (foreign-lambda void socket_write nonnull-c-pointer nonnull-c-string int symbol))
+  (define socket-write (foreign-lambda void socket_write nonnull-c-pointer nonnull-c-string int unsigned-long))
   (define (socket-write^ socket data callback)
-    (let ((e (event-name^ (make-event^))))
-      (hash-table-set! (socket-events socket) "write" e)
+    (let* ((e (make-event^))
+           (e-id (register-object^ e)))
+      (hash-table-set! (socket-events socket) "write" e-id)
       (event-subscribe^ e callback)
-      (socket-write (socket-ref socket) data (string-length data) (socket-name socket))))
+      (socket-write (socket-ref socket) data (string-length data) (socket-id socket))))
 
   (define remove-socket (foreign-lambda void remove_socket nonnull-c-pointer))
   (define (remove-socket^ socket)
     (remove-socket (socket-ref socket))
-    (for-each (lambda (e)
-        (event-remove^ e))
-      (hash-table-values (socket-events socket)))))
+    (for-each (lambda (e-id)
+        (unregister-object-by-id^ e-id)
+        (event-remove^ (id->object^ e-id)))
+      (hash-table-values (socket-events socket)))
+    (unregister-object^ socket)))
 
 (import uv-socket)
 

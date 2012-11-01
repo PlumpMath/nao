@@ -37,3 +37,8 @@
 
 (event-notify e)
 
+(define aa "aa")
+(register-object a)
+(display (object->id a))
+(unregister-object-by-id (object->id a))
+;(display (object->id 1000))

@@ -24,13 +24,20 @@
 #include <assert.h>
 
 typedef struct {
-  uv_tcp_t orgin;
-  char user_data[1024];
+  uv_tcp_t tcp;
+  unsigned long socket_id;
 } c_tcp_t;
 
-uv_tcp_t * make_socket(){
+typedef struct {
+  uv_write_t req;
+  uv_buf_t buf;
+  unsigned long socket_id;
+} c_write_req_t;
+
+uv_tcp_t * make_socket(unsigned long id){
   uv_tcp_t * socket = (uv_tcp_t *)malloc(sizeof(c_tcp_t));
   assert(socket);
+  ((c_tcp_t*)socket)->socket_id = id;
   int r = uv_tcp_init(uv_default_loop(), socket);
   if(r) err(uv_error_msg());
   return socket;
@@ -52,8 +59,9 @@ static void on_new_connection(uv_stream_t *socket, int status){
         remove_socket(client);
     } else {
       if(uv_accept(socket, (uv_stream_t *)client) == 0){
-        C_word c = make_socket_with_ref(client);
-        event_notify(socket_event(((c_tcp_t*)socket)->user_data, "listen"), c);
+        unsigned long s_id = ((c_tcp_t*)socket)->socket_id;
+        unsigned long c_id = make_socket_with_ref(client);
+        event_notify(socket_event(s_id, "listen"), c_id);
       } else {
         warn(uv_error_msg());
         remove_socket(client);
@@ -62,36 +70,35 @@ static void on_new_connection(uv_stream_t *socket, int status){
   }
 }
 
-void socket_listen(uv_tcp_t * socket, char * event){
+void socket_listen(uv_tcp_t * socket){
   int r = uv_listen((uv_stream_t *) socket, 128, on_new_connection);
   if(r) err(uv_error_msg());
-  strcpy((char *)&((c_tcp_t*)socket)->user_data, event);
-  //((c_tcp_t*)socket)->user_data = event;
 }
 
 static void on_connect(uv_connect_t * req, int status){
   if(status == -1) err(uv_error_msg());
   uv_tcp_t * socket = (uv_tcp_t *)req->handle;
-  C_word s = get_socket(((c_tcp_t*)socket)->user_data);
-  event_notify(socket_event(((c_tcp_t*)socket)->user_data, "connect"), s);
+  unsigned long s_id = ((c_tcp_t*)socket)->socket_id;
+  event_notify(socket_event(s_id, "connect"), s_id);
   free(req);
 }
 
-void socket_connect(uv_tcp_t * socket, char * addr, int port, char * event){
+void socket_connect(uv_tcp_t * socket, char * addr, int port){
   uv_connect_t *connect = (uv_connect_t*)malloc(sizeof(uv_connect_t));
   assert(connect);
   struct sockaddr_in6 dest = uv_ip6_addr(addr, port);
   int r = uv_tcp_connect6(connect, socket, dest, on_connect);
   if(r) err(uv_error_msg());
-  strcpy((char *)&((c_tcp_t*)socket)->user_data, event);
-  //((c_tcp_t*)socket)->user_data = event;
 }
 
 static void on_read(uv_stream_t * socket, ssize_t nread, uv_buf_t buf){
   if(nread == -1){
     socket_read_stop((uv_tcp_t *)socket);
   } else {
-    event_notify(socket_event(((c_tcp_t*)socket)->user_data, "read"), c_to_string(buf.base));
+    unsigned long s_id = ((c_tcp_t*)socket)->socket_id;
+    unsigned long b_id = register_string(buf.base);
+    event_notify(socket_event(s_id, "read"), b_id);
+    unregister_string(b_id);
     free(buf.base);
   }
 }
@@ -102,10 +109,9 @@ static uv_buf_t on_alloc(uv_handle_t *handle, size_t suggested_size){
   return uv_buf_init(buf, suggested_size);
 }
 
-void socket_read(uv_tcp_t * socket, char * event){
+void socket_read(uv_tcp_t * socket){
   int r = uv_read_start((uv_stream_t *)socket, on_alloc, on_read);
   if(r) err(uv_error_msg());
-  strcpy((char *)&((c_tcp_t*)socket)->user_data, event);
 }
 
 void socket_read_stop(uv_tcp_t * socket){
@@ -115,23 +121,22 @@ void socket_read_stop(uv_tcp_t * socket){
 
 static void on_write(uv_write_t * req, int status){
   if(status == -1) err(uv_error_msg());
-  uv_tcp_t * socket = (uv_tcp_t *)(req->handle);
-  C_word s = get_socket(((c_tcp_t*)socket)->user_data);
-  event_notify(socket_event(((c_tcp_t*)socket)->user_data, "write"), s);
+  unsigned long s_id = ((c_write_req_t *)req)->socket_id;
+  event_notify(socket_event(s_id, "write"), s_id);
+  free(((c_write_req_t *)req)->buf.base);
+  free(req);
 }
 
-void socket_write(uv_tcp_t * socket, char *data, int len, char * event){
-  uv_write_t * req = (uv_write_t *)malloc(sizeof(uv_write_t));
+void socket_write(uv_tcp_t * socket, char *data, int len, unsigned long socket_id){
+  c_write_req_t * req = (c_write_req_t *)malloc(sizeof(c_write_req_t));
   assert(req);
+  req->socket_id = socket_id;
   char * buf = (char *) malloc(len);
   assert(buf);
   strncpy(buf, data, len);
-  uv_buf_t *bufs = (uv_buf_t *) malloc(sizeof(uv_buf_t));
-  assert(bufs);
-  bufs[0] = uv_buf_init(buf, len);
-  int r = uv_write(req, (uv_stream_t *)socket, bufs, 1, on_write);
+  req->buf = uv_buf_init(buf, len);
+  int r = uv_write((uv_write_t *)req, (uv_stream_t *)socket, &req->buf, 1, on_write);
   if(r) err(uv_error_msg());
-  strcpy((char *)&((c_tcp_t*)socket)->user_data, event);
 }
 
 static void on_close(uv_handle_t * h){

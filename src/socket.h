@@ -21,13 +21,13 @@
 #include <uv.h>
 #include <chicken.h>
 
-uv_tcp_t * make_socket();
+uv_tcp_t * make_socket(unsigned long);
 void socket_bind(uv_tcp_t *, char *, int);
-void socket_listen(uv_tcp_t *, char *);
-void socket_connect(uv_tcp_t *, char *, int, char *);
-void socket_read(uv_tcp_t *, char *);
+void socket_listen(uv_tcp_t *);
+void socket_connect(uv_tcp_t *, char *, int);
+void socket_read(uv_tcp_t *);
 void socket_read_stop(uv_tcp_t * socket);
-void socket_write(uv_tcp_t *, char *, int, char *);
+void socket_write(uv_tcp_t *, char *, int, unsigned long);
 void remove_socket(uv_tcp_t *);
 
 #endif

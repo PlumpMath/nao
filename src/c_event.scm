@@ -27,6 +27,7 @@
   (import foreign)
   (use srfi-69)
   (import tick)
+  (import object)
 
   (define-record event
      name
@@ -34,7 +35,7 @@
 
   (define event-name^ event-name)
 
-  (define events (make-hash-table initial: #f weak-keys: #f weak-values: #f))
+  (define events (make-hash-table))
 
   (define (make-event^ #!key (name #f))
     (let* ((n (if name
@@ -42,16 +43,15 @@
                  (gensym)))
            (e (make-event
                 n
-                (make-hash-table initial: #f weak-keys: #t weak-values: #f))))
-      (hash-table-set! events (if (symbol? n) (symbol->string n) n) e)
+                (make-hash-table))))
+      (hash-table-set! events n e)
       e))
 
   (define (event^ name)
-    (let ((nn (if (symbol? name) (symbol->string name) name)))
-      (if (hash-table-exists? events nn)
-        (hash-table-ref events nn)
-        (begin
-          (abort "cannot find event")))))
+    (if (hash-table-exists? events name)
+      (hash-table-ref events name)
+      (begin
+        (abort "cannot find event"))))
 
   (define (event-subscribe^ ev callback)
     (let ((e (cond
@@ -82,10 +82,12 @@
            (cbs (event-callbacks e)))
       (hash-table-delete! cbs callback)))
 
-  (define-external (event_notify (symbol ev) (scheme-object arg)) void
-    (next-tick^ (lambda ()
-      (let ((args (if (list? arg) arg (list arg))))
-        (apply event-notify^ (cons ev args)))))))
+  (define-external (event_notify (long ev-id) (long arg-id)) void
+    (let ((ev (id->object^ ev-id))
+          (arg (id->object^ arg-id)))
+      (next-tick^ (lambda ()
+        (let ((args (if (list? arg) arg (list arg))))
+           (apply event-notify^ (cons ev args))))))))
 
 
 (import event)
