@@ -1,4 +1,7 @@
-all : libuv/.git
+all : libuv/libuv.a
+
+libuv/libuv.a : libuv/.git Makefile
+	make -C libuv
 
 libuv/.git : Makefile
 	mkdir -p libuv
@@ -6,6 +9,5 @@ libuv/.git : Makefile
 	  rm libuv -rf; \
 	fi;
 	git clone https://github.com/joyent/libuv.git
-	make -C libuv
 
 clean :
