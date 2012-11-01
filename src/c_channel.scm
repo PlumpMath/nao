@@ -18,6 +18,7 @@
 (module channel (make-chan^
                  chan^
                  chan-name^
+                 chan-exists?^
                  chan-empty?^
                  <-^
                  ->^
@@ -44,6 +45,9 @@
     events)
 
   (define chan-name^ channel-name)
+
+  (define (chan-exists?^ name)
+    (hash-table-exists? channels name))
 
   (define (chan^ name)
     (hash-table-ref channels name))
@@ -99,6 +103,7 @@
 
 (define make-chan make-chan^)
 (define chan chan^)
+(define chan-exists? chan-exists?^)
 (define chan-name chan-name^)
 (define chan-empty? chan-empty?^)
 (define <- <-^)

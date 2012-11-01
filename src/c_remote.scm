@@ -34,8 +34,10 @@
     (socket-bind^ server addr port)
     (socket-listen^ server (lambda (c)
       (socket-read^ c (lambda (d)
-        (let ((dd (string-split d "\n")))
-          (->^ (chan^ (car dd)) (apply string-append (cdr dd)))
+        (let* ((dd (string-split d "\n"))
+               (cn (car dd)))
+          (if (chan-exists?^ cn)
+            (->^ (chan^ cn) (apply string-append (cdr dd))))
           (remove-socket^ c)))))))
 
   (define (stop-server^)
