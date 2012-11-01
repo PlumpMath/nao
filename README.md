@@ -10,14 +10,13 @@ Server:
 	(define ch0 (make-chan "chan0"))
 	(define ch1 (make-chan "chan1"))
 
-	; behaviors
-	(always@ (lambda ()
+	; behaviors : sensitive list
+	(always@ (list ch0 ch1)
+	  (lambda ()
 	  ; body
-	  (info (<- ch0))
-	  (info (<- ch1))
-	  (stop-server))
-	  ; channel list
-	  ch0 ch1)
+	    (info (<- ch0))
+	    (info (<- ch1))
+	    (stop-server)))
 
 	; start server
 	(start-server addr: "0.0.0.0" port: 1234)

@@ -1,8 +1,8 @@
 
 (define ch (make-chan "chan0"))
-(always@ (lambda ()
-  (info (<- ch)))
-  ch)
+(always@ ch
+  (lambda ()
+    (info (<- ch))))
 
 (initial (lambda ()
   (start-server addr: "0.0.0.0" port: 1234)
