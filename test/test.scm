@@ -1,4 +1,4 @@
-(display "b\n")
+(err "b\n")
 (next-tick (lambda ()
   (display "a\n")
   (next-tick (lambda ()

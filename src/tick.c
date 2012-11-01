@@ -18,7 +18,6 @@
 
 #include "tick.h"
 #include <uv.h>
-#include "logger.h"
 #include "utils.h"
 
 static uv_prepare_t prepare_watcher;

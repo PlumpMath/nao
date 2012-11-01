@@ -19,7 +19,6 @@
 #include "socket.h"
 #include <uv.h>
 #include <string.h>
-#include "logger.h"
 #include "utils.h"
 #include <assert.h>
 

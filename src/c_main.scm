@@ -15,6 +15,7 @@
 ;;;;
 
 (include "c_object.scm")
+(include "c_logger.scm")
 (include "c_utils.scm")
 (include "c_tick.scm")
 (include "c_coroutine.scm")

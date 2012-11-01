@@ -8,14 +8,13 @@ nao_SOURCES = src/main.c \
              src/c_event.scm \
              src/c_socket.scm \
              src/c_utils.scm \
+             src/c_logger.scm \
              src/c_object.scm \
-             src/utils.c \
-             src/logger.c
+             src/utils.c
 
 nao_SOURCES_CMP = src/main.c \
              src/tick.c \
              src/utils.c \
-             src/logger.c \
              src/socket.c \
              src/c_main.scm
 
