@@ -124,10 +124,11 @@ void socket_write(uv_tcp_t * socket, char *data, int len, unsigned long socket_i
   c_write_req_t * req = (c_write_req_t *)malloc(sizeof(c_write_req_t));
   assert(req);
   req->socket_id = socket_id;
-  char * buf = (char *) malloc(len);
+  char * buf = (char *) malloc(len+1);
   assert(buf);
   strncpy(buf, data, len);
-  req->buf = uv_buf_init(buf, len);
+  buf[len] = '\0';
+  req->buf = uv_buf_init(buf, len+1);
   int r = uv_write((uv_write_t *)req, (uv_stream_t *)socket, &req->buf, 1, on_write);
   if(r) err(uv_error_msg());
 }
