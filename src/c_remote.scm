@@ -17,7 +17,8 @@
 
 (module remote (start-server^
                 stop-server^
-                ~>^)
+                ~>^
+                <~^)
 
   (import scheme)
   (import chicken)
@@ -35,10 +36,22 @@
     (socket-listen^ server (lambda (c)
       (socket-read^ c (lambda (d)
         (let* ((dd (string-split d "\n"))
-               (cn (car dd)))
-          (if (chan-exists?^ cn)
-            (->^ (chan^ cn) (apply string-append (cdr dd))))
-          (remove-socket^ c)))))))
+               (cn (car dd))
+               (ddd (cdr dd))
+               (rw (car ddd)))
+          (if (equal? rw "~>")
+            (begin
+              (if (chan-exists?^ cn)
+                (->^ (chan^ cn) (apply string-append (cdr ddd))))
+              (remove-socket^ c))
+            (begin
+              (socket-write^ c (if (chan-exists?^ cn)
+                                   (if (chan-empty?^ (chan^ cn))
+                                     "empty channel"
+                                     (<-^ (chan^ cn)))
+                                   "unkown channel")
+                (lambda (c)
+                  (remove-socket^ c)))))))))))
 
   (define (stop-server^)
     (remove-socket^ server))
@@ -47,7 +60,7 @@
     (let ((c (make-socket^))
           (cc current-coroutine^))
       (socket-connect^ c addr port (lambda (c)
-        (socket-write^ c (string-append chan "\n" data)
+        (socket-write^ c (string-append chan "\n~>\n" data)
           (lambda (c)
             (remove-socket^ c)
             (coroutine-wake^ cc)))))
@@ -58,9 +71,12 @@
           (cc current-coroutine^)
           (data ""))
       (socket-connect^ c addr port (lambda (c)
-        (socket-read^ c (lambda (d)
-          (set! data d)
-          (coroutine-wake^ cc)))))
+        (socket-write^ c (string-append chan "\n<~")
+          (lambda (c)
+            (socket-read^ c (lambda (d)
+              (set! data d)
+              (remove-socket^ c)
+              (coroutine-wake^ cc)))))))
       (coroutine-sleep^)
       data)))
 
@@ -70,4 +86,5 @@
 (define start-server start-server^)
 (define stop-server stop-server^)
 (define ~> ~>^)
+(define <~ <~^)
 
