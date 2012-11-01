@@ -35,7 +35,6 @@
     (socket-listen^ server (lambda (c)
       (socket-read^ c (lambda (d)
         (let ((dd (string-split d "\n")))
-          (remove-socket^ c)
           (->^ (chan^ (car dd)) (apply string-append (cdr dd)))))))))
 
   (define (stop-server^)
@@ -47,7 +46,7 @@
       (socket-connect^ c addr port (lambda (c)
         (socket-write^ c (string-append chan "\n" data)
           (lambda (c)
-            (remove-socket^ c)))
+            (void)))
         (coroutine-wake^ cc)))
       (coroutine-sleep^)))
 
