@@ -28,6 +28,7 @@
   (use srfi-69)
   (import tick)
   (import object)
+  (import utils)
 
   (define-record event
      name
@@ -51,7 +52,7 @@
     (if (hash-table-exists? events name)
       (hash-table-ref events name)
       (begin
-        (abort "cannot find event"))))
+        (throw^ 'NFE "cannot find event:" name))))
 
   (define (event-subscribe^ ev callback)
     (let ((e (cond

@@ -29,6 +29,7 @@
   (import scheme)
   (use srfi-69)
   (import object)
+  (import utils)
 
   (define-record socket
     id
@@ -62,7 +63,7 @@
            (evs (socket-events socket)))
       (if (hash-table-exists? evs ev)
         (hash-table-ref evs ev)
-        (abort "cannot find event of socket"))))
+        (throw^ 'NFSE "cannot find event of socket:" ev))))
 
   (define socket-bind (foreign-lambda void socket_bind nonnull-c-pointer nonnull-c-string int))
   (define (socket-bind^ socket addr port)
