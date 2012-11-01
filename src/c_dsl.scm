@@ -1,4 +1,5 @@
-(module dsl (@^)
+(module dsl (@^
+             always@^)
 
   (import scheme)
   (import chicken)
@@ -20,8 +21,17 @@
       (hash-table-for-each
         (lambda (arg f)
           (unsubscribe-on-write^ arg f))
-        r))))
+        r)))
+  
+  (define (always@^ body . args)
+    (make-coroutine^ (lambda ()
+      (letrec ((f (lambda ()
+                    (apply @^ args)
+                    (body)
+                    (f))))
+        (f))))))
 
 (import dsl)
 
 (define @ @^)
+(define always@ always@^)
