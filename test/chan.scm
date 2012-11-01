@@ -1,8 +1,7 @@
 (define c (make-chan))
 
 (always@ (lambda ()
-  (info "a")
-  (info "b"))
+  (info (<- c)))
   c)
 
 (initial (lambda ()
