@@ -53,3 +53,7 @@
 (define @ @^)
 (define always@ always@^) 
 
+(define-syntax bar
+  (syntax-rules ()
+   ((_) "bar")))
+
