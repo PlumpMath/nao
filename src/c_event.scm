@@ -38,7 +38,7 @@
 
   (define events (make-hash-table))
 
-  (define (make-event^ #!key (name #f))
+  (define (make-event^ #!optional (name #f))
     (let* ((n (if name
                  name
                  (gensym)))

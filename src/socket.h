@@ -21,7 +21,23 @@
 #include <uv.h>
 #include <chicken.h>
 
-uv_tcp_t * make_socket(unsigned long);
+typedef struct {
+  uv_tcp_t tcp;
+  unsigned long socket_id;
+} c_tcp_t;
+
+typedef struct {
+  uv_write_t req;
+  uv_buf_t buf;
+  unsigned long socket_id;
+} c_write_req_t;
+
+typedef struct {
+  uv_connect_t req;
+  unsigned long socket_id;
+} c_connect_t;
+
+c_tcp_t * make_socket(unsigned long);
 void socket_bind(uv_tcp_t *, char *, int);
 void socket_listen(uv_tcp_t *);
 void socket_connect(uv_tcp_t *, char *, int, unsigned long);

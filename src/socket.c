@@ -22,27 +22,11 @@
 #include "utils.h"
 #include <assert.h>
 
-typedef struct {
-  uv_tcp_t tcp;
-  unsigned long socket_id;
-} c_tcp_t;
-
-typedef struct {
-  uv_write_t req;
-  uv_buf_t buf;
-  unsigned long socket_id;
-} c_write_req_t;
-
-typedef struct {
-  uv_connect_t req;
-  unsigned long socket_id;
-} c_connect_t;
-
-uv_tcp_t * make_socket(unsigned long id){
-  uv_tcp_t * socket = (uv_tcp_t *)malloc(sizeof(c_tcp_t));
+c_tcp_t * make_socket(unsigned long id){
+  c_tcp_t * socket = (c_tcp_t *)malloc(sizeof(c_tcp_t));
   assert(socket);
-  ((c_tcp_t*)socket)->socket_id = id;
-  int r = uv_tcp_init(uv_default_loop(), socket);
+  socket->socket_id = id;
+  int r = uv_tcp_init(uv_default_loop(), (uv_tcp_t *)socket);
   if(r) err(uv_error_msg());
   return socket;
 }
@@ -65,6 +49,7 @@ static void on_new_connection(uv_stream_t *socket, int status){
       if(uv_accept(socket, (uv_stream_t *)client) == 0){
         unsigned long s_id = ((c_tcp_t*)socket)->socket_id;
         unsigned long c_id = make_socket_with_ref(client);
+        ((c_tcp_t*)client)->socket_id = c_id;
         event_notify(socket_event(s_id, "listen"), c_id);
       } else {
         warn(uv_error_msg());
@@ -97,8 +82,11 @@ void socket_connect(uv_tcp_t * socket, char * addr, int port, unsigned long sock
 
 static void on_read(uv_stream_t * socket, ssize_t nread, uv_buf_t buf){
   if(nread == -1){
-    socket_read_stop((uv_tcp_t *)socket);
+    if(uv_last_error(uv_default_loop()).code == UV_EOF)
+      socket_read_stop((uv_tcp_t *)socket);
+    else err(uv_error_msg());
   } else if(nread == 0) {
+    free(buf.base);
   } else {
     unsigned long s_id = ((c_tcp_t*)socket)->socket_id;
     unsigned long b_id = register_string(buf.base);

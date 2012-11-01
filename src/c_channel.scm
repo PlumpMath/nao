@@ -47,12 +47,13 @@
   (define (chan^ name)
     (hash-table-ref channels name))
 
-  (define (make-chan^ #!key (name #f))
+  (define (make-chan^ #!optional (name #f))
     (let* ((n (if name name (gensym)))
            (c (make-channel
                 n
                 `()
                 (make-hash-table))))
+      (hash-table-set! channels n c)
       (let ((evs (channel-events c)))
         (hash-table-set! evs "read" (make-event^))
         (hash-table-set! evs "write" (make-event^)))

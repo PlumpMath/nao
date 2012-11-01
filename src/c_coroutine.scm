@@ -38,7 +38,7 @@
   (define running-q (make-hash-table))
   (define sleeping-q (make-hash-table))
 
-  (define (make-coroutine^ body #!key (name #f))
+  (define (make-coroutine^ body #!optional (name #f))
     (letrec ((c (make-fiber (if name
                               name
                               (gensym))

@@ -36,7 +36,7 @@
       (socket-read^ c (lambda (d)
         (let ((dd (string-split d "\n")))
           (remove-socket^ c)
-          (->^ (chan^ (car d) (apply string-append (cdr dd))))))))))
+          (->^ (chan^ (car dd)) (apply string-append (cdr dd)))))))))
 
   (define (stop-server^)
     (remove-socket^ server))
