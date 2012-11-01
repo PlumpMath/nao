@@ -39,7 +39,7 @@ void socket_bind(uv_tcp_t * socket, char *addr, int port){
 
 static void on_new_connection(uv_stream_t *socket, int status){
   if(status == -1) err(uv_error_msg());
-  uv_tcp_t *client = (uv_tcp_t *)malloc(sizeof(uv_tcp_t));
+  uv_tcp_t *client = (uv_tcp_t *)malloc(sizeof(c_tcp_t));
   if(client) {
     int r = uv_tcp_init(uv_default_loop(), client);
     if(r){
