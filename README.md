@@ -63,9 +63,9 @@ Building commands:
 ###### Event system
 
 * (make-event [name]): Create an event.
-* (event-subscribe event callback): Subscribe a callback into an event.
-* (event-unsubscribe event callback): Unsubscribe a callback from an event.
-* (event-notify event args ...): Notify an event with arguments.
+* (subscribe event callback): Subscribe a callback into an event.
+* (unsubscribe event callback): Unsubscribe a callback from an event.
+* (notify event args ...): Notify an event with arguments.
 * (remove-event event): Remove an event.
 
 ###### Reactive system
