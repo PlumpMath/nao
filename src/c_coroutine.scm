@@ -60,9 +60,6 @@
   (define (coroutine-alive?^ f)
     (fiber-alive f))
 
-  (define-external (run_scheduler) void
-    (run-one))
-
   (define (run-one)
     (let ((cs (hash-table-keys running-q)))
       (for-each (lambda (c)
@@ -73,6 +70,9 @@
               (set! current-coroutine^ c)
               ((fiber-cont c) (void))))))
         cs)))
+
+  (define-external (run_scheduler) void
+    (run-scheduler^))
 
   (define (run-scheduler^)
     (letrec ((l (lambda ()

@@ -43,6 +43,7 @@ static void check(uv_check_t *handle, int status){
 }
 
 static void idle(uv_idle_t *handle, int status){
+  run_scheduler();
   _run_ticks();
 }
 

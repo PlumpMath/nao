@@ -30,6 +30,4 @@
     (load f))
     (cdr (argv)))))
 
-(run-scheduler)
-
 (return-to-host)
