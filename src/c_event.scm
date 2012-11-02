@@ -17,6 +17,7 @@
 
 (module event (make-event^
                event-name^
+               event?^
                event-subscribe^
                event-notify^
                event-remove^
@@ -35,6 +36,7 @@
      callbacks)
 
   (define event-name^ event-name)
+  (define event?^ event?)
 
   (define events (make-hash-table))
 
@@ -100,3 +102,4 @@
 (define event-unsubscribe event-unsubscribe^)
 (define event event^)
 (define event-name event-name^)
+(define event? event?^)

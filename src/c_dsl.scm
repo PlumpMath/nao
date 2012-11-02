@@ -24,6 +24,7 @@
   (use srfi-69)
   (import coroutine)
   (import channel)
+  (import event)
 
   (define (@^ . args)
     (let ((r (make-hash-table)))
@@ -33,13 +34,17 @@
                  (f (lambda ()
                       (coroutine-wake^ c))))
             (hash-table-set! r arg f)
-            (subscribe-on-write^ arg f)))
+            (cond
+              ((event?^ arg) (event-subscribe^ arg f))
+              (else (subscribe-on-write^ arg f)))))
         args)
       (coroutine-sleep^)
       (hash-table-for-each
         r
         (lambda (arg f)
-          (unsubscribe-on-write^ arg f)))))
+          (cond
+            ((event?^ arg) (event-unsubscribe^ arg f))
+            (else (unsubscribe-on-write^ arg f)))))))
 
   (define (always@^ arg body)
     (let ((args (if (list? arg) arg (list arg))))

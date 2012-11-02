@@ -60,14 +60,16 @@ Building commands:
   * (-> chan data): Write a data into a channel.
 
 * Event system.
-  * (always@ sensitive-list-of-channels body): When any channel in the sensitive list is pushed a data, 
-the body will be executed. (This is like verilog's always block)
-  * (initial body): Creat a non-preempt thread.
-  * (@ chan [chan ...]): Blocking current thread until the writing of any channel in the list happens.
   * (make-event [name]): Create an event.
   * (event-subscribe event callback): Subscribe a callback into an event.
   * (event-unsubscribe event callback): Unsubscribe a callback from an event.
   * (remove-event event): Remove an event.
+
+* Reactive system. 
+   (always@ sensitive-list-of-channels-or-events body): When any channel of event in the sensitive list is pushed a data or
+event happens, the body will be executed. (This is like verilog's always block)
+  * (initial body): Creat a non-preempt thread.
+  * (@ chan-or-event [chan-or-event ...]): Blocking current thread until the writing of any channel or event in the list happens.
 
 #### Distributed programming
 
