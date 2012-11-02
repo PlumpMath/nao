@@ -3,8 +3,8 @@
 Nao is a DSL based on chicken scheme for distributed reactive programming.
 
 Nao is like node.js and running in a event loop based on libuv. 
-It also supports co-routine based on chicken scheme's delimited continuation.
-Nao gives a DSL which supports reactive programming by co-routine.
+It also supports non-preempt thread(coroutine) based on chicken scheme's delimited continuation.
+Nao gives a DSL which supports reactive programming by non-preempt thread.
 By supporting remote read/write, it is easy for distributed programming in nao.
 
 ### Example
@@ -51,4 +51,36 @@ Building commands:
 ### Bugs and limitations
 
 ### APIs
+
+#### Reactive programming
+
+* Channel which data can be push into and read out.
+
+  * (make-chan [name]): Create a channel;
+  * (<- chan): Read a data from a channel. If channel is empty, block current thread.
+  * (-> chan data): Write a data into a channel.
+
+* Event system.
+
+  * (always@ sensitive-list-of-channels body): When any channel in the sensitive list is pushed a data, 
+the body will be executed. (This is like verilog's always block)
+  * (make-event [name]): Create an event.
+  * (event-subscribe event callback): Subscribe a callback into an event.
+  * (event-unsubscribe event callback): Unsubscribe a callback from an event.
+  * (remove-event event): Remove an event.
+
+#### Distributed programming
+
+* Server.
+
+  * (start-server [addr: ip] [port: number]): Start a server.
+  * (stop-server): stop server.
+
+* Remote read/write.
+
+  * (<~ remote-chan-name [addr: ip] [port: number]): Read a data from a remote channel. 
+If remote channel is empty, return "empty channel". 
+If remote channel does not exist, return "unkown channel".
+  * (~> remote-chan-name data [addr: ip] [port: number]): Write a data into a remote channel.
+
 
