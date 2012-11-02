@@ -26,7 +26,7 @@ SUBDIRS = deps
 
 INCLUDES = -Ideps/libuv/include -Isrc -include-path src
 
-LIBS = -Ldeps/libuv -luv -lm -ldl -lrt -lpthread
+LIBS = -Ldeps/libuv -luv -lm -ldl -lrt
 
 .PHONY: subdirs
 
