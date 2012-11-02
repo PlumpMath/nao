@@ -54,35 +54,39 @@ Building commands:
 
 #### Reactive programming
 
-* Channel which data can be push into and read out.
-  * (make-chan [name]): Create a channel;
-  * (<- chan): Read a data from a channel. If channel is empty, block current thread.
-  * (-> chan data): Write a data into a channel.
+###### Data
 
+* (make-chan [name]): Create a channel;
+* (<- chan): Read a data from a channel. If channel is empty, block current thread.
+* (-> chan data): Write a data into a channel.
 
-* Event system.
-  * (make-event [name]): Create an event.
-  * (event-subscribe event callback): Subscribe a callback into an event.
-  * (event-unsubscribe event callback): Unsubscribe a callback from an event.
-  * (event-notify event args ...): Notify an event with arguments.
-  * (remove-event event): Remove an event.
+###### Event system
 
-* Reactive system. 
-  * (always@ sensitive-list-of-channels-or-events body): When any channel of event in the sensitive list is pushed a data or
+* (make-event [name]): Create an event.
+* (event-subscribe event callback): Subscribe a callback into an event.
+* (event-unsubscribe event callback): Unsubscribe a callback from an event.
+* (event-notify event args ...): Notify an event with arguments.
+* (remove-event event): Remove an event.
+
+###### Reactive system
+
+* (always@ sensitive-list-of-channels-or-events body): When any channel of event in the sensitive list is pushed a data or
 event happens, the body will be executed. (This is like verilog's always block)
-  * (initial body): Creat a non-preempt thread.
-  * (@ chan-or-event [chan-or-event ...]): Blocking current thread until the writing of any channel or event in the list happens.
+* (initial body): Creat a non-preempt thread.
+* (@ chan-or-event [chan-or-event ...]): Blocking current thread until the writing of any channel or event in the list happens.
 
 #### Distributed programming
 
-* Server.
-  * (start-server [addr: ip] [port: number]): Start a server.
-  * (stop-server): stop server.
+###### Server
 
-* Remote read/write.
-  * (<~ remote-chan-name [addr: ip] [port: number]): Read a data from a remote channel. 
+* (start-server [addr: ip] [port: number]): Start a server.
+* (stop-server): stop server.
+
+###### Remote read/write
+
+* (<~ remote-chan-name [addr: ip] [port: number]): Read a data from a remote channel. 
 If remote channel is empty, return "empty channel". 
 If remote channel does not exist, return "unkown channel".
-  * (~> remote-chan-name data [addr: ip] [port: number]): Write a data into a remote channel.
+* (~> remote-chan-name data [addr: ip] [port: number]): Write a data into a remote channel.
 
 
