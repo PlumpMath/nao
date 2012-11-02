@@ -62,6 +62,8 @@ Building commands:
 * Event system.
   * (always@ sensitive-list-of-channels body): When any channel in the sensitive list is pushed a data, 
 the body will be executed. (This is like verilog's always block)
+  * (initial body): Creat a non-preempt thread.
+  * (@ chan [chan ...]): Blocking current thread until the writing of any channel in the list happens.
   * (make-event [name]): Create an event.
   * (event-subscribe event callback): Subscribe a callback into an event.
   * (event-unsubscribe event callback): Unsubscribe a callback from an event.
