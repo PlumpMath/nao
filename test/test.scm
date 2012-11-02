@@ -23,19 +23,19 @@
 
 (define e (make-event))
 
-(define cb (event-subscribe e (lambda ()
+(define cb (subscribe e (lambda ()
   (display "event\n"))))
 
-(define cb1 (event-subscribe e (lambda ()
+(define cb1 (subscribe e (lambda ()
   (display "event1\n"))))
 
 (gc)
 
-(event-notify e)
+(notify e)
 
-(event-unsubscribe e cb)
+(unsubscribe e cb)
 
-(event-notify e)
+(notify e)
 
 (define aa "aa")
 (register-object a)
