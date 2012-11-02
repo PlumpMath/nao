@@ -20,7 +20,7 @@
                event?^
                event-subscribe^
                event-notify^
-               event-remove^
+               remove-event^
                event-unsubscribe^
                event^)
   (import scheme)
@@ -72,7 +72,7 @@
         (apply cb args))
         cbs)))
 
-  (define (event-remove^ ev)
+  (define (remove-event^ ev)
     (let ((n (cond
                ((event? ev) (event-name ev))
                (else (event^ ev)))))
@@ -98,7 +98,7 @@
 (define make-event make-event^)
 (define subscribe event-subscribe^)
 (define notify event-notify^)
-(define remove-event event-remove^)
+(define remove-event remove-event^)
 (define unsubscribe event-unsubscribe^)
 (define event event^)
 (define event-name event-name^)

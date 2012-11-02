@@ -110,7 +110,7 @@
     (remove-socket (socket-ref socket))
     (for-each (lambda (e-id)
         (unregister-object-by-id^ e-id)
-        (event-remove^ (id->object^ e-id)))
+        (remove-event^ (id->object^ e-id)))
       (hash-table-values (socket-events socket)))
     (unregister-object^ socket)))
 
