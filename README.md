@@ -60,7 +60,7 @@ Building commands:
 * (<- chan): Read a data from a channel. If channel is empty, block current thread.
 * (-> chan data): Write a data into a channel.
 
-###### Event system
+###### Event
 
 * (make-event [name]): Create an event.
 * (subscribe event callback): Subscribe a callback into an event.
