@@ -1,6 +1,6 @@
 ### Nao
 
-Nao is a DSL based on chicken scheme for distributed reactive programming.
+Nao is a DSL in chicken scheme for distributed reactive programming.
 
 Nao is like node.js and running in a event loop based on libuv. 
 It also supports non-preempt thread(coroutine) based on chicken scheme's delimited continuation.
