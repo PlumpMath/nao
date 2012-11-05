@@ -45,13 +45,15 @@ Requisites:
 Building commands:
 
 * git clone https://github.com/wehu/nao.git
-* make
+* make [PREFIX=path]
 
 ### Run
 
 	nao [file ...]
 
 ### Bugs and limitations
+
+Only support unix platform so far.
 
 ### APIs
 

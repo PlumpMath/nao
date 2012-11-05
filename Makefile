@@ -1,3 +1,5 @@
+PREFIX ?= /usr/local
+
 bin_PROGRAMS = nao
 
 nao_DEPS = src/main.c \
@@ -20,10 +22,6 @@ nao_DEPS = src/main.c \
 
 nao_SOURCES = src/main.c \
               src/c_main.scm
-        #      src/tick.c \
-              src/utils.c \
-              src/socket.c \
-              src/c_main.scm
 
 SUBDIRS = deps
 
@@ -31,7 +29,7 @@ STEM = $(PWD)
 
 INCLUDES = -I$(STEM)/deps/libuv/include -Isrc -Isrc/nao -include-path src
 
-LIBS = -L$(STEM)/deps/libuv -lm -ldl -lrt -luv
+LIBS = -L$(PREFIX)/lib -lm -ldl -lrt -luv
 
 .PHONY: subdirs
 
@@ -43,5 +41,5 @@ $(bin_PROGRAMS) : $(nao_DEPS) Makefile
 
 
 subdirs:
-	mkdir -p $(SUBDIRS); make -C $(SUBDIRS)
+	mkdir -p $(SUBDIRS); make -C $(SUBDIRS) PREFIX=$(PREFIX)
 
