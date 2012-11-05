@@ -28,11 +28,11 @@ nao_SOURCES = src/main.c \
 
 SUBDIRS = deps
 
-STEM = $(PWD)
+STEM = $(shell pwd)
 
 INCLUDES = -I$(STEM)/deps/libuv/include -Isrc -Isrc/nao -include-path src
 
-LIBS = -L$(PREFIX)/lib -lm -ldl -lrt -luv
+LIBS = -L$(PREFIX)/lib -luv
 
 .PHONY: subdirs
 
@@ -40,7 +40,7 @@ all : subdirs $(bin_PROGRAMS)
 
 $(bin_PROGRAMS) : $(nao_DEPS) Makefile
 	cd src/nao; CSC_OPTIONS='$(LIBS) $(INCLUDES)' chicken-install
-	csc $(nao_SOURCES) $(LIBS) $(INCLUDES) -o $@ -embedded -:w
+	csc $(nao_SOURCES) $(LIBS) $(INCLUDES) -o $@ -embedded -:w -L '-pthread -lrt'
 
 
 subdirs:
