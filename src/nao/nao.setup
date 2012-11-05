@@ -1,4 +1,4 @@
-(compile -s -O3 -d1 "nao.scm" "socket.c" "tick.c" "utils.c" -j nao)
+(compile -s -O3 -d1 "nao.scm" "socket.c" "tick.c" "utils.c" "logger.c" -j nao)
 (compile -s -O3 -d0 "nao.import.scm")
 
 (install-extension

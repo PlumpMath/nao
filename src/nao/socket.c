@@ -21,6 +21,7 @@
 #include <string.h>
 #include "utils.h"
 #include <assert.h>
+#include "logger.h"
 
 c_tcp_t * make_socket(unsigned long id){
   c_tcp_t * socket = (c_tcp_t *)malloc(sizeof(c_tcp_t));

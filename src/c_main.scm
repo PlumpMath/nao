@@ -15,7 +15,6 @@
 ;;;;
 
 (use nao)
-(import nao)
 
 (init-tick)
 

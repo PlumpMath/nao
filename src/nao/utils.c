@@ -18,12 +18,13 @@
 
 #include "utils.h"
 #include <uv.h>
+#include "logger.h"
 
 #define ERR_MSG_LEN 1024
 
 static char err_msg[ERR_MSG_LEN];
 
-const char * uv_error_msg(){
+char * uv_error_msg(){
   return uv_strerror(uv_last_error(uv_default_loop()));
 }
 

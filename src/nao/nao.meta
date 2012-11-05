@@ -1,8 +1,19 @@
 ((files "nao.setup"
         "nao.scm"
+        "c_channel.scm"
+        "c_dsl.scm"
+        "c_logger.scm"
+        "c_remote.scm"
+        "c_tick.scm"
+        "c_coroutine.scm"
+        "c_event.scm"
+        "c_object.scm"
+        "c_socket.scm"
+        "c_utils.scm"
         "socket.c"
         "tick.c"
-        "utils.c")
+        "utils.c"
+        "logger.c")
  (licence "Apache")
  (author "Wei Hu")
  (synopsis "nao"))
