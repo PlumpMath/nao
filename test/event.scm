@@ -7,5 +7,7 @@
   (info "aa"))
 
 (initial
+  (@ 1)
   (notify ev)
+  (@ 1)
   (notify ev))
