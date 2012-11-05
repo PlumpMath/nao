@@ -87,7 +87,7 @@ If a timer is specified, it will wake up current thread if timer is time out.
 * (always@ (sensitive-list-of-channels-or-events-or-timer) body): When any channel of event in the sensitive list is pushed a data or
 event happens or time out, the body will be executed. (This is like verilog's always block)
 * (initial body): Creat a non-preempt thread.
-* (@ chan-or-event [chan-or-event ...]): Blocking current thread until the writing of any channel or event in the list happens.
+* (@ sensitive-list-of-chan-or-event-or-timer): Blocking current thread until the writing of any channel or event in the list happens.
 
 #### Distributed programming
 
