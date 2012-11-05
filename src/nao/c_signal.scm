@@ -48,8 +48,9 @@
   (hash-table-ref (signal--events s) name))
 
 (define (<! s)
-  (signal--old-data s)
-  (event-notify (sig-event s "read")))
+  (let ((v (signal--old-data s)))
+    (event-notify (sig-event s "read"))
+    v))
 
 (define (!> s data)
   (signal--new-data-set! s data)

@@ -93,7 +93,8 @@
   @
   always@
   initial
-  $)
+  $
+  nexttick)
 
   (import chicken scheme)
   (import foreign)

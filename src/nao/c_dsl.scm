@@ -59,3 +59,7 @@
        (make-coroutine (lambda ()
          body body* ...)))))))
 
+(define-syntax nexttick
+  (syntax-rules ()
+    ((_ body body* ...)
+     (next-tick (lambda () body body* ...)))))
