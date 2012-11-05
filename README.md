@@ -59,11 +59,20 @@ Only support unix platform so far.
 
 #### Reactive programming
 
-###### Data
+###### Signal
 
-* (make-chan [name]): Create a channel;
-* (<- chan): Read a data from a channel. If channel is empty, block current thread.
+* (make-sig [name]): Create a signal.
+* (<! signal): Read a data from a signal.
+* (!> signal data): Write a data into a signal.
+* (remove-sig signal): Remove a signal.
+
+###### Channel
+
+* (make-chan [name]): Create a channel.
+* (<- chan [timer]): Read a data from a channel. If channel is empty, block current thread.
+If a timer is specified, it will wake up current thread if timer is time out.
 * (-> chan data): Write a data into a channel.
+* (remove-chan chan): Remove a channel.
 
 ###### Event
 
@@ -75,8 +84,8 @@ Only support unix platform so far.
 
 ###### Reactive system
 
-* (always@ (sensitive-list-of-channels-or-events) body): When any channel of event in the sensitive list is pushed a data or
-event happens, the body will be executed. (This is like verilog's always block)
+* (always@ (sensitive-list-of-channels-or-events-or-timer) body): When any channel of event in the sensitive list is pushed a data or
+event happens or time out, the body will be executed. (This is like verilog's always block)
 * (initial body): Creat a non-preempt thread.
 * (@ chan-or-event [chan-or-event ...]): Blocking current thread until the writing of any channel or event in the list happens.
 
