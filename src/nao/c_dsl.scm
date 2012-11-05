@@ -20,16 +20,18 @@
 (define (@ . args)
   (let ((r (make-hash-table)))
     (for-each
-      (lambda (arg)
-        (let* ((c current-coroutine)
+      (lambda (a)
+        (let* ((arg (if (number? a) (make-timer) a))
+               (c current-coroutine)
                (f (lambda (#!rest as)
-                    (coroutine-set-field c "current-event" arg)
+                    (coroutine-set-field c "current-event" a)
                     (coroutine-wake c))))
           (hash-table-set! r arg f)
           (cond
             ((event? arg) (event-subscribe arg f))
             ((sig? arg) (sig-subscribe-on-write arg f))
             ((chan? arg) (chan-subscribe-on-write arg f))
+            ((timer? arg) (start-timer arg a f))
             (else (throw 'UT "unsupport type for @")))))
       args)
     (coroutine-sleep)
@@ -40,6 +42,7 @@
           ((event? arg) (event-unsubscribe arg f))
           ((sig? arg) (sig-unsubscribe-on-write arg f))
           ((chan? arg) (chan-unsubscribe-on-write arg f))
+          ((timer? arg) (remove-timer arg))
           (else (throw 'UT "unsupport type for @")))))))
 
 (define-syntax always@
