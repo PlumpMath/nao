@@ -19,8 +19,7 @@
 
 (define-record signal-
   name
-  old-data
-  new-data
+  data
   events)
 
 (define sig? signal-?)
@@ -29,7 +28,6 @@
   (let* ((n (if name name (gensym)))
          (s (make-signal-
               n
-              #f
               #f
               (make-hash-table))))
     (hash-table-set! %signals n s)
@@ -51,12 +49,12 @@
   (hash-table-ref (signal--events s) name))
 
 (define (<! s)
-  (let ((v (signal--old-data s)))
+  (let ((v (signal--data s)))
     (event-notify (sig-event s "read"))
     v))
 
 (define (!> s data)
-  (signal--new-data-set! s data)
+  (signal--data-set! s data)
   (event-notify (sig-event s "write")))
 
 (define (sig-subscribe-on-read s callback)
@@ -75,7 +73,3 @@
   (let ((e (sig-event s "write")))
     (event-unsubscribe e callback)))
 
-(define (update-signals)
-  (hash-table-for-each %signals
-    (lambda (n s)
-      (signal--old-data-set! s (signal--new-data s)))))

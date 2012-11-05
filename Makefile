@@ -5,7 +5,6 @@ bin_PROGRAMS = nao
 nao_DEPS = src/main.c \
            src/c_main.scm \
            src/nao/nao.scm \
-           src/nao/tick.c \
            src/nao/c_tick.scm \
            src/nao/c_coroutine.scm \
            src/nao/c_event.scm \
@@ -18,10 +17,16 @@ nao_DEPS = src/main.c \
            src/nao/c_remote.scm \
            src/nao/c_signal.scm \
            src/nao/c_timer.scm \
+           src/nao/tick.c \
            src/nao/timer.c \
            src/nao/socket.c \
            src/nao/utils.c \
-           src/nao/logger.c
+           src/nao/logger.c \
+           src/nao/tick.h \
+           src/nao/timer.h \
+           src/nao/socket.h \
+           src/nao/utils.h \
+           src/nao/logger.h
 
 nao_SOURCES = src/main.c \
               src/c_main.scm
