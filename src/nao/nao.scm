@@ -34,6 +34,8 @@
   init-tick
   ; coroutine
   make-coroutine
+  coroutine-set-field
+  coroutine-field
   coroutine-sleep
   coroutine-wake
   coroutine-alive?
@@ -78,7 +80,8 @@
   ; dsl
   @
   always@
-  initial)
+  initial
+  $)
 
   (import chicken scheme)
   (import foreign)

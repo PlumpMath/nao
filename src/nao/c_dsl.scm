@@ -14,6 +14,8 @@
 ;; limitations under the License.
 ;;;;
 
+(define ($)
+  (coroutine-field current-coroutine "current-event"))
 
 (define (@ . args)
   (let ((r (make-hash-table)))
@@ -21,6 +23,7 @@
       (lambda (arg)
         (let* ((c current-coroutine)
                (f (lambda ()
+                    (coroutine-set-field c "current-event" arg)
                     (coroutine-wake c))))
           (hash-table-set! r arg f)
           (cond

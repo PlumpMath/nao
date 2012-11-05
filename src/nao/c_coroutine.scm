@@ -18,7 +18,8 @@
 (define-record fiber-
   name
   alive
-  cont)
+  cont
+  data)
 
 (define current-coroutine)
 
@@ -31,9 +32,16 @@
                         #t
                         (lambda (arg)
                           (body)
-                          (fiber--alive-set! c #f)))))
+                          (fiber--alive-set! c #f))
+                        (make-hash-table))))
     (hash-table-set! %running-q c c)
     c))
+
+(define (coroutine-set-field f field data)
+  (hash-table-set! (fiber--data f) field data))
+
+(define (coroutine-field f field)
+  (hash-table-ref (fiber--data f) field))
 
 (define (coroutine-sleep)
   (%shift cont

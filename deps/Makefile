@@ -1,8 +1,8 @@
 PREFIX ?= /usr/local
 
-all : $(PREFIX)/libuv.so
+all : $(PREFIX)/lib/libuv.so
 
-$(PREFIX)/libuv.so : libuv/.git Makefile
+$(PREFIX)/lib/libuv.so : libuv/.git Makefile
 	cp libuv/Makefile libuv/Makefile.tmp
 	echo 'libuv.so: $$(OBJS) src/fs-poll.o src/inet.o src/uv-common.o src/unix/ev/ev.o' >> libuv/Makefile.tmp
 	echo '	$$(CC) -shared -o $$@ $$^' >> libuv/Makefile.tmp
