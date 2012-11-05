@@ -61,6 +61,7 @@
   remove-socket
   ; channel
   make-chan
+  remove-chan
   chan
   chan?
   chan-name
@@ -68,10 +69,21 @@
   chan-empty?
   <-
   ->
-  subscribe-on-read
-  unsubscribe-on-read
-  subscribe-on-write
-  unsubscribe-on-write
+  chan-subscribe-on-read
+  chan-unsubscribe-on-read
+  chan-subscribe-on-write
+  chan-unsubscribe-on-write
+  ; signal
+  make-sig
+  remove-sig
+  sig
+  sig?
+  <!
+  !>
+  sig-subscribe-on-read
+  sig-unsubscribe-on-read
+  sig-subscribe-on-write
+  sig-unsubscribe-on-write
   ; remote
   start-server
   stop-server
@@ -99,6 +111,7 @@
   (include "c_coroutine.scm")
   (include "c_event.scm")
   (include "c_socket.scm")
+  (include "c_signal.scm")
   (include "c_channel.scm")
   (include "c_remote.scm")
   (include "c_dsl.scm"))

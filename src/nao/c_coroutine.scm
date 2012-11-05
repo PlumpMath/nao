@@ -55,6 +55,7 @@
   (fiber--alive f))
 
 (define (run-one)
+  (update-signals)
   (let ((cs (hash-table-keys %running-q)))
     (for-each (lambda (c)
       (hash-table-delete! %running-q c)

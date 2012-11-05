@@ -62,19 +62,22 @@
     (channel--queue-set! chan (append q (list data)))
     (event-notify (chan-event chan "write"))))
 
-(define (subscribe-on-read chan callback)
+(define (chan-subscribe-on-read chan callback)
   (let ((e (chan-event chan "read")))
     (event-subscribe e callback)))
 
-(define (unsubscribe-on-read chan callback)
+(define (chan-unsubscribe-on-read chan callback)
   (let ((e (chan-event chan "read")))
     (event-unsubscribe e callback)))
 
-(define (subscribe-on-write chan callback)
+(define (chan-subscribe-on-write chan callback)
   (let ((e (chan-event chan "write")))
     (event-subscribe e callback)))
 
-(define (unsubscribe-on-write chan callback)
+(define (chan-unsubscribe-on-write chan callback)
   (let ((e (chan-event chan "write")))
     (event-unsubscribe e callback)))
 
+(define (remove-chan c)
+  (let ((cc (if (chan? c) c (chan c))))
+    (hash-table-delete! %channels (chan-name cc))))

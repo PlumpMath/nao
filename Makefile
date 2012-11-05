@@ -16,6 +16,7 @@ nao_DEPS = src/main.c \
            src/nao/c_object.scm \
            src/nao/c_dsl.scm \
            src/nao/c_remote.scm \
+           src/nao/c_signal.scm \
            src/nao/socket.c \
            src/nao/utils.c \
            src/nao/logger.c

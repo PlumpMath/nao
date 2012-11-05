@@ -28,7 +28,9 @@
           (hash-table-set! r arg f)
           (cond
             ((event? arg) (event-subscribe arg f))
-            (else (subscribe-on-write arg f)))))
+            ((sig? arg) (sig-subscribe-on-write arg f))
+            ((chan? arg) (chan-subscribe-on-write arg f))
+            (else (throw 'UT "unsupport type for @")))))
       args)
     (coroutine-sleep)
     (hash-table-for-each
@@ -36,7 +38,9 @@
       (lambda (arg f)
         (cond
           ((event? arg) (event-unsubscribe arg f))
-          (else (unsubscribe-on-write arg f)))))))
+          ((sig? arg) (sig-unsubscribe-on-write arg f))
+          ((chan? arg) (chan-unsubscribe-on-write arg f))
+          (else (throw 'UT "unsupport type for @")))))))
 
 (define-syntax always@
   (syntax-rules ()
