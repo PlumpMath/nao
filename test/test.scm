@@ -1,3 +1,5 @@
+(import nao)
+
 (err "b\n")
 (next-tick (lambda ()
   (display "a\n")
@@ -7,18 +9,18 @@
 (display "c\n")
 
 (define b)
-(define a (make-cor (lambda ()
+(define a (make-coroutine (lambda ()
   (display "aaa\n")
-;  (cor-wake b)
-   (cor-sleep)
-   (cor-wake b)
+;  (coroutine-wake b)
+   (coroutine-sleep)
+   (coroutine-wake b)
   (display "ccc\n"))))
 
-(set! b (make-cor (lambda ()
+(set! b (make-coroutine (lambda ()
   (display "bbb\n")
- ; (cor-sleep)
-  (cor-wake a)
-  (cor-sleep)
+ ; (coroutine-sleep)
+  (coroutine-wake a)
+  (coroutine-sleep)
   (display "eee\n"))))
 
 (define e (make-event))
@@ -42,3 +44,4 @@
 (display (object->id a))
 (unregister-object-by-id (object->id a))
 ;(display (object->id 1000))
+

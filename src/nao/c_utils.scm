@@ -14,14 +14,7 @@
 ;; limitations under the License.
 ;;;;
 
-(use nao)
-(import nao)
+(define (throw label . args)
+  (apply err args)
+  (abort label))
 
-(init-tick)
-
-(make-coroutine (lambda ()
-  (for-each (lambda (f)
-    (load f))
-    (cdr (argv)))))
-
-(return-to-host)

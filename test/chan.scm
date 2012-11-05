@@ -1,8 +1,9 @@
+(import nao)
+
 (define c (make-chan))
 
-(always@ c
-  (lambda ()
-    (info (<- c))))
+(always@ (c)
+  (info (<- c)))
 
-(initial (lambda ()
-  (-> c "aa")))
+(initial 
+  (-> c "aa"))

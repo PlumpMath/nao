@@ -1,3 +1,5 @@
+(import nao)
+
 (define s (make-socket))
 (socket-bind s "0.0.0.0" 1234)
 (socket-listen s (lambda (c)

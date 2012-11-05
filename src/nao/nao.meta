@@ -1,0 +1,8 @@
+((files "nao.setup"
+        "nao.scm"
+        "socket.c"
+        "tick.c"
+        "utils.c")
+ (licence "Apache")
+ (author "Wei Hu")
+ (synopsis "nao"))

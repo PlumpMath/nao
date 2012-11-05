@@ -14,15 +14,30 @@
 ;; limitations under the License.
 ;;;;
 
-(module utils (throw^)
+(define %ticks `())
+(define %new-ticks `())
 
-  (import scheme)
-  (import chicken)
-  (import logger)
+(define (next-tick callback)
+  (set! %new-ticks (cons callback %new-ticks))
+  (add-tick))
 
-  (define (throw^ label . args)
-    (apply err^ args)
-    (abort label)))
+(define add-tick (foreign-lambda void "add_tick"))
 
-(import utils)
-(define throw throw^)
+(define-external (run_ticks) void
+  (for-each (lambda (cb)
+    (set! %ticks (cons cb %ticks)))
+    %new-ticks)
+  (set! %new-ticks `())
+  (for-each (lambda (cb)
+    (cb))
+    %ticks)
+  (set! %ticks `()))
+
+(define-external (ticks_empty_p) bool
+  (if (= (length %new-ticks) 0)
+    #t #f))
+
+(define init-tick (foreign-lambda void "init_tick"))
+
+(define ticks-empty? ticks_empty_p)
+

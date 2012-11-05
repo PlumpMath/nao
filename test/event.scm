@@ -1,9 +1,10 @@
+(import nao)
 
 (define ev (make-event "e0"))
 
-(always@ ev (lambda ()
-  (info "aa")))
+(always@ (ev)
+  (info "aa"))
 
-(initial (lambda ()
+(initial
   (notify ev)
-  (notify ev)))
+  (notify ev))

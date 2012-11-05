@@ -1,0 +1,7 @@
+(compile -s -O3 -d1 "nao.scm" "socket.c" "tick.c" "utils.c" -j nao)
+(compile -s -O3 -d0 "nao.import.scm")
+
+(install-extension
+ 'nao
+ '("nao.so" "nao.import.so")
+ '((version 0.1)))
