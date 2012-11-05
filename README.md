@@ -11,22 +11,25 @@ By supporting remote read/write, it is easy for distributed programming in nao.
 
 Server:
 
+	(import nao)
+
 	; create two channels
 	(define ch0 (make-chan "chan0"))
 	(define ch1 (make-chan "chan1"))
 
 	; behaviors : sensitive list
-	(always@ (list ch0 ch1)
-	  (lambda ()
-	    ; body
-	    (info (<- ch0))
-	    (info (<- ch1))
-	    (stop-server)))
+	(always@ (ch0 ch1)
+	  ; body
+	  (info (<- ch0))
+	  (info (<- ch1))
+	  (stop-server))
 
 	; start server
 	(start-server addr: "0.0.0.0" port: 1234)
 
 Client:
+
+	(import nao)
 
 	; remote writing
 	(~> "chan0" "Hello" addr: "0.0.0.0" port: 1234)
@@ -70,7 +73,7 @@ Building commands:
 
 ###### Reactive system
 
-* (always@ sensitive-list-of-channels-or-events body): When any channel of event in the sensitive list is pushed a data or
+* (always@ (sensitive-list-of-channels-or-events) body): When any channel of event in the sensitive list is pushed a data or
 event happens, the body will be executed. (This is like verilog's always block)
 * (initial body): Creat a non-preempt thread.
 * (@ chan-or-event [chan-or-event ...]): Blocking current thread until the writing of any channel or event in the list happens.
