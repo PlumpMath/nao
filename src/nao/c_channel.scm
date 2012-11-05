@@ -80,4 +80,7 @@
 
 (define (remove-chan c)
   (let ((cc (if (chan? c) c (chan c))))
-    (hash-table-delete! %channels (chan-name cc))))
+    (hash-table-delete! %channels (chan-name cc))
+    (hash-table-for-each (channel--events cc)
+      (lambda (n e)
+        (remove-event e)))))

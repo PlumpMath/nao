@@ -22,7 +22,7 @@
     (for-each
       (lambda (arg)
         (let* ((c current-coroutine)
-               (f (lambda ()
+               (f (lambda (#!rest as)
                     (coroutine-set-field c "current-event" arg)
                     (coroutine-wake c))))
           (hash-table-set! r arg f)

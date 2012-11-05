@@ -9,11 +9,18 @@
         "c_event.scm"
         "c_object.scm"
         "c_socket.scm"
+        "c_timer.scm"
         "c_utils.scm"
         "socket.c"
+        "socket.h"
+        "timer.c"
+        "timer.h"
         "tick.c"
+        "tick.h"
         "utils.c"
-        "logger.c")
+        "utils.h"
+        "logger.c"
+        "logger.h")
  (licence "Apache")
  (author "Wei Hu")
  (synopsis "nao"))

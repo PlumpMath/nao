@@ -59,6 +59,12 @@
   socket-read-stop
   socket-write
   remove-socket
+  ; timer
+  make-timer
+  timer?
+  start-timer
+  stop-timer
+  remove-timer
   ; channel
   make-chan
   remove-chan
@@ -112,6 +118,7 @@
   (include "c_coroutine.scm")
   (include "c_event.scm")
   (include "c_socket.scm")
+  (include "c_timer.scm")
   (include "c_signal.scm")
   (include "c_channel.scm")
   (include "c_remote.scm")

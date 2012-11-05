@@ -42,7 +42,10 @@
 
 (define (remove-sig s)
   (let ((ss (if (sig? s) s (sig s))))
-    (hash-table-delete! %signals (signal--name ss))))
+    (hash-table-delete! %signals (signal--name ss))
+    (hash-table-for-each (signal--events ss)
+      (lambda (n e)
+        (remove-event e)))))
 
 (define (sig-event s name)
   (hash-table-ref (signal--events s) name))
