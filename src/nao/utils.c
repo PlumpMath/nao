@@ -25,7 +25,7 @@
 static char err_msg[ERR_MSG_LEN];
 
 char * uv_error_msg(){
-  return uv_strerror(uv_last_error(uv_default_loop()));
+  return (char *)uv_strerror(uv_last_error(uv_default_loop()));
 }
 
 char * chicken_error_msg(){
