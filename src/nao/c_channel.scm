@@ -50,7 +50,7 @@
 (define (chan-event chan name)
   (hash-table-ref (channel--events chan) name))
 
-(define (<- chan #!optional (delay -1))
+(define (<- chan #!optional (delay 10000000000))
   (if (chan-empty? chan) (@ chan delay))
   (let ((d (car (channel--queue chan))))
     (channel--queue-set! chan (cdr (channel--queue chan)))
