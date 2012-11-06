@@ -74,6 +74,7 @@
   chan-exists?
   chan-empty?
   <-
+  peek
   ->
   chan-subscribe-on-read
   chan-unsubscribe-on-read

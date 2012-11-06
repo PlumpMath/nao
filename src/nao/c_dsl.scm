@@ -14,8 +14,19 @@
 ;; limitations under the License.
 ;;;;
 
-(define ($)
-  (coroutine-field current-coroutine "current-event"))
+(define ($ #!optional (index 0))
+  (coroutine-field current-coroutine index))
+
+(define (snapshot c . args)
+  (fold (lambda (arg i)
+    (coroutine-set-field c i
+      (cond
+        ((sig? arg) (<! arg))
+        ((chan? arg) (peek arg))
+        (else arg)))
+    (+ i 1))
+    1
+    args))
 
 (define (@ . args)
   (let ((r (make-hash-table)))
@@ -24,7 +35,8 @@
         (let* ((arg (if (number? a) (make-timer) a))
                (c current-coroutine)
                (f (lambda (#!rest as)
-                    (coroutine-set-field c "current-event" a)
+                    (coroutine-set-field c 0 a)
+                    (apply snapshot (cons c args))
                     (coroutine-wake c))))
           (hash-table-set! r arg f)
           (cond

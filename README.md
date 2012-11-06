@@ -91,6 +91,9 @@ If a timer is specified, it will wake up current thread and return "timeout" if 
 event happens or time out, the body will be executed. (This is like verilog's always block)
 * (initial body): Creat a non-preempt thread.
 * (@ sensitive-list-of-chan-or-event-or-timer): Blocking current thread until the writing of any channel or event in the list happens.
+* ($ [index]): snapshot of values for sensitive list.
+  * ($ [0]): the happened event.
+  * ($ [1..]): the value in location indiciated by index. 
 
 #### Distributed programming
 

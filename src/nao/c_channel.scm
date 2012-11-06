@@ -63,6 +63,11 @@
       d)
     "timeout"))
 
+(define (peek chan)
+  (if (chan-empty? chan)
+    "empty channel"
+    (car (channel--queue chan))))
+
 (define (-> chan data)
   (let ((q (channel--queue chan)))
     (channel--queue-set! chan (append q (list data)))
