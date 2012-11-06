@@ -42,22 +42,43 @@
 (define (stop-server)
   (remove-socket %server))
 
-(define (~> chan data #!key (addr "0.0.0.0") (port 3000))
+(define %remote-channels (make-hash-table))
+
+(define-record remote-channel-
+  name
+  addr
+  port)
+
+(define (make-remote-chan name #!key (addr "0.0.0.0") (port 3000))
+  (let ((c (make-remote-channel-
+             name
+             addr
+             port)))
+    (hash-table-set! %remote-channels name c)
+    c))
+
+(define (remove-remote-chan chan)
+  (hash-table-delete! %remote-channels (remote-channel--name chan)))
+
+(define (remote-chan name)
+  (hash-table-ref %remote-channels name))
+
+(define (~> chan data)
   (let ((c (make-socket))
         (cc current-coroutine))
-    (socket-connect c addr port (lambda (c)
-      (socket-write c (string-append chan "\n~>\n" data)
+    (socket-connect c (remote-channel--addr chan) (remote-channel--port chan) (lambda (c)
+      (socket-write c (string-append (remote-channel--name chan) "\n~>\n" (format #f "~a" data))
         (lambda (c)
           (remove-socket c)
           (coroutine-wake cc)))))
     (coroutine-sleep)))
 
-(define (<~ chan #!key (addr "0.0.0.0") (port 3000))
+(define (<~ chan)
   (let ((c (make-socket))
         (cc current-coroutine)
         (data ""))
-    (socket-connect c addr port (lambda (c)
-      (socket-write c (string-append chan "\n<~")
+    (socket-connect c (remote-channel--addr chan) (remote-channel--port chan) (lambda (c)
+      (socket-write c (string-append (remote-channel--name chan) "\n<~")
         (lambda (c)
           (socket-read c (lambda (d)
             (set! data d)

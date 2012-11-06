@@ -93,6 +93,9 @@
   ; remote
   start-server
   stop-server
+  make-remote-chan
+  remove-remote-chan
+  remote-chan
   ~>
   <~
   ; dsl
