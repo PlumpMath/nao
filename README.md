@@ -92,8 +92,9 @@ event happens or time out, the body will be executed. (This is like verilog's al
 * (initial body): Creat a non-preempt thread.
 * (@ sensitive-list-of-chan-or-event-or-timer): Blocking current thread until the writing of any channel or event in the list happens.
 * ($ [index]): snapshot of values for sensitive list.
-  * ($ [0]): the value related to happened event.
-  * ($ [1..]): the value in location indicated by index. 
+  * ($): happened event.
+  * ($ 0): the value related to happened event.
+  * ($ 1..): the value in location indicated by index. 
 
 #### Distributed programming
 
