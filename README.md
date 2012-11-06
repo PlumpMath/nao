@@ -73,7 +73,7 @@ Only support unix platform so far.
 
 * (make-chan [name]): Create a channel.
 * (<- chan [timer]): Read a data from a channel. If channel is empty, block current thread.
-If a timer is specified, it will wake up current thread if time is out.
+If a timer is specified, it will wake up current thread and return "timeout" if time is out.
 * (-> chan data): Write a data into a channel.
 * (remove-chan chan): Remove a channel.
 
@@ -103,9 +103,10 @@ event happens or time out, the body will be executed. (This is like verilog's al
 
 * (make-remote-chan name [addr: ip] [port: number]): Create a remote channel.
 * (remove-remote-chan chan): Remove a remote channel.
-* (<~ remote-chan): Read a data from a remote channel. 
-If remote channel is empty, return "empty channel". 
+* (<~ remote-chan [timer]): Read a data from a remote channel. 
+If remote channel is empty, block current thread.
+If a timer is specified, it will wake up current thread and return "timeout" if time is out. 
 If remote channel does not exist, return "unkown channel".
-* (~> remote-chan): Write a data into a remote channel.
+* (~> remote-chan data): Write a data into a remote channel.
 
 

@@ -51,11 +51,17 @@
   (hash-table-ref (channel--events chan) name))
 
 (define (<- chan #!optional (delay -1))
-  (if (chan-empty? chan) (if (< delay 0) (@ chan) (@ chan delay)))
-  (let ((d (car (channel--queue chan))))
-    (channel--queue-set! chan (cdr (channel--queue chan)))
-    (event-notify (chan-event chan "read"))
-    d))
+  (letrec ((cf (lambda ()
+     (if (chan-empty? chan) (begin
+       (if (< delay 0) (@ chan) (@ chan delay))
+       (if (equal? ($) chan) (cf)))))))
+    (cf))
+  (if (equal? ($) chan)
+    (let ((d (car (channel--queue chan))))
+      (channel--queue-set! chan (cdr (channel--queue chan)))
+      (event-notify (chan-event chan "read"))
+      d)
+    "timeout"))
 
 (define (-> chan data)
   (let ((q (channel--queue chan)))

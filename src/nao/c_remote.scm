@@ -30,14 +30,12 @@
             (if (chan-exists? cn)
               (-> (chan cn) (apply string-append (cdr ddd))))
             (remove-socket c))
-          (begin
+          (make-coroutine (lambda ()
             (socket-write c (if (chan-exists? cn)
-                                 (if (chan-empty? (chan cn))
-                                   "empty channel"
-                                   (<- (chan cn)))
-                                 "unkown channel")
+                                  (<- (chan cn) (string->number (cadr ddd)))
+                                  "unkown channel")
               (lambda (c)
-                (remove-socket c)))))))))))
+                (remove-socket c))))))))))))
 
 (define (stop-server)
   (remove-socket %server))
@@ -49,6 +47,8 @@
   addr
   port)
 
+(define remote-chan? remote-channel-?)
+
 (define (make-remote-chan name #!key (addr "0.0.0.0") (port 3000))
   (let ((c (make-remote-channel-
              name
@@ -58,7 +58,8 @@
     c))
 
 (define (remove-remote-chan chan)
-  (hash-table-delete! %remote-channels (remote-channel--name chan)))
+  (let ((rc (if (remote-chan? chan) chan (remote-chan chan))))
+    (hash-table-delete! %remote-channels (remote-channel--name chan))))
 
 (define (remote-chan name)
   (hash-table-ref %remote-channels name))
@@ -73,18 +74,20 @@
           (coroutine-wake cc)))))
     (coroutine-sleep)))
 
-(define (<~ chan)
+(define (<~ chan #!optional (delay -1))
   (let ((c (make-socket))
         (cc current-coroutine)
-        (data ""))
+        (data "timeout"))
     (socket-connect c (remote-channel--addr chan) (remote-channel--port chan) (lambda (c)
-      (socket-write c (string-append (remote-channel--name chan) "\n<~")
+      (socket-write c (string-append (remote-channel--name chan) "\n<~\n" (number->string delay))
         (lambda (c)
           (socket-read c (lambda (d)
             (set! data d)
             (remove-socket c)
             (coroutine-wake cc)))))))
-    (coroutine-sleep)
+    (if (< delay 0)
+      (coroutine-sleep)
+      (@ delay))
     data))
 
 

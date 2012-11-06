@@ -9,6 +9,6 @@
 (initial
   (start-server addr: "0.0.0.0" port: 1234)
   (~> rch 123)
-  (info (<~ rch))
+  (info "remote" (<~ rch 2))
   (info "write done")
   (stop-server))

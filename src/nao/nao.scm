@@ -94,6 +94,7 @@
   start-server
   stop-server
   make-remote-chan
+  remote-chan?
   remove-remote-chan
   remote-chan
   ~>
