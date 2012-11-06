@@ -4,7 +4,7 @@ Nao is a DSL in chicken scheme for distributed reactive programming.
 
 Nao is like node.js and running in a event loop based on libuv. 
 It also supports non-preempt thread(coroutine) based on chicken scheme's delimited continuation.
-Nao gives a DSL which supports distribued reactive programming by non-preempt thread and libuv's networking.
+Nao gives a DSL which supports distributed reactive programming by non-preempt thread and libuv's networking.
 By supporting remote read/write, it is easy for distributed programming in nao.
 
 ### Example
@@ -70,7 +70,7 @@ Only support unix platform so far.
 
 * (make-chan [name]): Create a channel.
 * (<- chan [timer]): Read a data from a channel. If channel is empty, block current thread.
-If a timer is specified, it will wake up current thread if timer is time out.
+If a timer is specified, it will wake up current thread if time is out.
 * (-> chan data): Write a data into a channel.
 * (remove-chan chan): Remove a channel.
 

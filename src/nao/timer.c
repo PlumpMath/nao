@@ -3,6 +3,7 @@
 #include "logger.h"
 #include "utils.h"
 #include <assert.h>
+#include <stdlib.h>
 
 c_timer_t * make_timer(unsigned long id){
   c_timer_t * timer = (c_timer_t *)malloc(sizeof(c_timer_t));
