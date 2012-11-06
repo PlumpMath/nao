@@ -73,9 +73,9 @@
   chan-name
   chan-exists?
   chan-empty?
-  <-
+  <<-
   peek
-  ->
+  ->>
   chan-subscribe-on-read
   chan-unsubscribe-on-read
   chan-subscribe-on-write
@@ -105,7 +105,9 @@
   always@
   initial
   $
-  nexttick)
+  nexttick
+  ->
+  <-)
 
   (import chicken scheme)
   (import foreign)

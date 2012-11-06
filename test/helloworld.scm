@@ -13,5 +13,5 @@
 (define rch0 (make-remote-chan "chan0" addr: "0.0.0.0" port: 1234))
 (define rch1 (make-remote-chan "chan1" addr: "0.0.0.0" port: 1234))
 
-(~> rch0 "Hello")
-(~> rch1 "World")
+(-> rch0 "Hello")
+(-> rch1 "World")

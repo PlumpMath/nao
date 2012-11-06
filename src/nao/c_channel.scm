@@ -50,7 +50,7 @@
 (define (chan-event chan name)
   (hash-table-ref (channel--events chan) name))
 
-(define (<- chan #!optional (delay -1))
+(define (<<- chan #!optional (delay -1))
   (letrec ((cf (lambda ()
      (if (chan-empty? chan) (begin
        (if (< delay 0) (@ chan) (@ chan delay))
@@ -68,7 +68,7 @@
     "empty channel"
     (car (channel--queue chan))))
 
-(define (-> chan data)
+(define (->> chan data)
   (let ((q (channel--queue chan)))
     (channel--queue-set! chan (append q (list data)))
     (event-notify (chan-event chan "write"))))

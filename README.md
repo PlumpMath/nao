@@ -35,8 +35,8 @@ Client:
 	(define rch1 (make-remote-chan "chan1" addr: "0.0.0.0" port: 1234))
 
 	; remote writing
-	(~> rch0 "Hello")
-	(~> rch1 "World")
+	(-> rch0 "Hello")
+	(-> rch1 "World")
 
 ### Install
 
@@ -65,8 +65,8 @@ Only support unix platform so far.
 ###### Signal
 
 * (make-sig [name]): Create a signal.
-* (<! signal): Read a data from a signal.
-* (!> signal data): Write a data into a signal.
+* (<- signal): Read a data from a signal.
+* (-> signal data): Write a data into a signal.
 * (remove-sig signal): Remove a signal.
 
 ###### Channel
@@ -92,8 +92,8 @@ event happens or time out, the body will be executed. (This is like verilog's al
 * (initial body): Creat a non-preempt thread.
 * (@ sensitive-list-of-chan-or-event-or-timer): Blocking current thread until the writing of any channel or event in the list happens.
 * ($ [index]): snapshot of values for sensitive list.
-  * ($ [0]): the happened event.
-  * ($ [1..]): the value in location indiciated by index. 
+  * ($ [0]): the value related to happened event.
+  * ($ [1..]): the value in location indicated by index. 
 
 #### Distributed programming
 
@@ -106,10 +106,10 @@ event happens or time out, the body will be executed. (This is like verilog's al
 
 * (make-remote-chan name [addr: ip] [port: number]): Create a remote channel.
 * (remove-remote-chan chan): Remove a remote channel.
-* (<~ remote-chan [timer]): Read a data from a remote channel. 
+* (<- remote-chan [timer]): Read a data from a remote channel. 
 If remote channel is empty, block current thread.
 If a timer is specified, it will wake up current thread and return "timeout" if time is out. 
 If remote channel does not exist, return "unkown channel".
-* (~> remote-chan data): Write a data into a remote channel.
+* (-> remote-chan data): Write a data into a remote channel.
 
 

@@ -6,6 +6,7 @@
 
 (always@ (chan ev sig)
   (info ($))
+  (info ($ 0))
   (info ($ 1))
   (info ($ 2))
   (info ($ 3))

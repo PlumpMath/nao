@@ -14,7 +14,7 @@
 ;; limitations under the License.
 ;;;;
 
-(define ($ #!optional (index 0))
+(define ($ #!optional (index -1))
   (coroutine-field current-coroutine index))
 
 (define (snapshot c . args)
@@ -35,7 +35,11 @@
         (let* ((arg (if (number? a) (make-timer) a))
                (c current-coroutine)
                (f (lambda (#!rest as)
-                    (coroutine-set-field c 0 a)
+                    (coroutine-set-field c -1 a)
+                    (coroutine-set-field c 0 (cond
+                      ((sig? a) (<! a))
+                      ((chan? a) (peek a))
+                      (else arg)))
                     (apply snapshot (cons c args))
                     (coroutine-wake c))))
           (hash-table-set! r arg f)
@@ -44,7 +48,7 @@
             ((sig? arg) (sig-subscribe-on-write arg f))
             ((chan? arg) (chan-subscribe-on-write arg f))
             ((timer? arg) (start-timer arg a f))
-            (else (throw 'UT "unsupport type for @")))))
+            (else (throw 'UT "unsupported type for @")))))
       args)
     (coroutine-sleep)
     (hash-table-for-each
@@ -55,7 +59,7 @@
           ((sig? arg) (sig-unsubscribe-on-write arg f))
           ((chan? arg) (chan-unsubscribe-on-write arg f))
           ((timer? arg) (remove-timer arg))
-          (else (throw 'UT "unsupport type for @")))))))
+          (else (throw 'UT "unsupported type for @")))))))
 
 (define-syntax always@
   (syntax-rules ()
@@ -78,3 +82,18 @@
   (syntax-rules ()
     ((_ body body* ...)
      (next-tick (lambda () body body* ...)))))
+
+(define (<- a #!optional (delay -1))
+  (cond
+    ((sig? a) (<! a))
+    ((chan? a) (<<- a delay))
+    ((remote-chan? a) (<~ a delay))
+    (else (throw 'UT "unsupported type for <-"))))
+
+(define (-> a d)
+   (cond
+    ((sig? a) (!> a d))
+    ((chan? a) (->> a d))
+    ((remote-chan? a) (~> a d))
+    (else (throw 'UT "unsupported type for <-"))))
+

@@ -32,7 +32,7 @@
             (remove-socket c))
           (make-coroutine (lambda ()
             (socket-write c (if (chan-exists? cn)
-                                  (<- (chan cn) (string->number (cadr ddd)))
+                                  (<<- (chan cn) (string->number (cadr ddd)))
                                   "unkown channel")
               (lambda (c)
                 (remove-socket c))))))))))))
