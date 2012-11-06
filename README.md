@@ -31,9 +31,12 @@ Client:
 
 	(import nao)
 
+	(define rch0 (make-remote-chan "chan0" addr: "0.0.0.0" port: 1234))
+	(define rch1 (make-remote-chan "chan1" addr: "0.0.0.0" port: 1234))
+
 	; remote writing
-	(~> "chan0" "Hello" addr: "0.0.0.0" port: 1234)
-	(~> "chan1" "World" addr: "0.0.0.0" port: 1234)
+	(~> rch0 "Hello")
+	(~> rch1 "World")
 
 ### Install
 
@@ -98,9 +101,11 @@ event happens or time out, the body will be executed. (This is like verilog's al
 
 ###### Remote read/write
 
-* (<~ remote-chan-name [addr: ip] [port: number]): Read a data from a remote channel. 
+* (make-remote-chan name [addr: ip] [port: number]): Create a remote channel.
+* (remove-remote-chan chan): Remove a remote channel.
+* (<~ remote-chan): Read a data from a remote channel. 
 If remote channel is empty, return "empty channel". 
 If remote channel does not exist, return "unkown channel".
-* (~> remote-chan-name data [addr: ip] [port: number]): Write a data into a remote channel.
+* (~> remote-chan): Write a data into a remote channel.
 
 
