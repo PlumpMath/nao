@@ -17,6 +17,8 @@
 
 (define %server (make-socket))
 (define %client-counter 0)
+(define %stop-counter 0)
+(define %max-stop-try 10)
 
 (define (start-server #!key (addr "0.0.0.0") (port 3000))
   (socket-bind %server addr port)
@@ -46,8 +48,11 @@
     (make-coroutine (lambda ()
       (letrec ((l (lambda () 
                     (@ 1)
-                    (if (= %client-counter 0)
-                      (remove-socket %server)
+                    (set! %stop-counter (+ %stop-counter 1))
+                    (if (or (= %client-counter 0)
+                            (> %stop-counter %max-stop-try))
+                      (begin (remove-socket %server)
+                             (set! %stop-counter 0))
                       (l)))))
         (l))))))
 
