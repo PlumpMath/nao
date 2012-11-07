@@ -11,5 +11,4 @@
   (-> rch 123)
   (info "remote" (<- rch 2))
   (info "write done")
-  (@ 10)
   (stop-server))

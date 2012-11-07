@@ -16,6 +16,7 @@
 
 
 (define %server (make-socket))
+(define %client-counter 0)
 
 (define (start-server #!key (addr "0.0.0.0") (port 3000))
   (socket-bind %server addr port)
@@ -31,14 +32,24 @@
               (-> (chan cn) (apply string-append (cdr ddd))))
             (remove-socket c))
           (make-coroutine (lambda ()
+            (set! %client-counter (+ %client-counter 1))
             (socket-write c (if (chan-exists? cn)
                                   (<<- (chan cn) (string->number (cadr ddd)))
                                   "unkown channel")
               (lambda (c)
-                (remove-socket c))))))))))))
+                (remove-socket c)
+                (set! %client-counter (- %client-counter 1)))))))))))))
 
 (define (stop-server)
-  (remove-socket %server))
+  (if (= %client-counter 0)
+    (remove-socket %server)
+    (make-coroutine (lambda ()
+      (letrec ((l (lambda () 
+                    (@ 1)
+                    (if (= %client-counter 0)
+                      (remove-socket %server)
+                      (l)))))
+        (l))))))
 
 (define %remote-channels (make-hash-table))
 
